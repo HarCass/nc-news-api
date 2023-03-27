@@ -17,5 +17,6 @@ exports.selectArticles = () => {
     ORDER BY articles.created_at DESC
     `
     return db.query(sql)
-    .then(({rows}) => rows);
+    .then(({rows}) => rows)
+    .catch(err => err);
 }
