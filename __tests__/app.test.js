@@ -129,6 +129,14 @@ describe('POST /api/articles/:article_id/comments', () => {
         .expect(400)
         .then(({body}) => expect(body.msg).toBe('Invalid Format'));
     });
+    it('400: returns a bad request if the data to post is missing properties.', () => {
+        const item = {username: 'lurker'};
+        return request(app)
+        .post('/api/articles/3/comments')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
     it('404: returns a not found if the username is not in the database.', () => {
         const item = { username: 'HC62', body: 'This is a test comment.' };
         return request(app)
