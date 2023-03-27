@@ -171,4 +171,48 @@ describe('PATCH/api/articles/:article_id', () => {
             });
         });
     });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        const item = {inc_votes: 10};
+        return request(app)
+        .patch('/api/articles/not_an_id')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid ID');
+        });
+    });
+    it('404: returns a not found if there are no comments for given ID and ID does not exist.', () => {
+        const item = {inc_votes: 10};
+        return request(app)
+        .patch('/api/articles/9999999')
+        .send(item)
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('ID Not Found');
+        });
+    });
+    it('400: returns a bad request if the data is missing inc_votes.', () => {
+        const item = {};
+        return request(app)
+        .patch('/api/articles/3')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid Format');
+        });
+    });
+    it('400: returns a bad request if inc_votes value is not a number.', () => {
+        const item = {inc_votes: 'Not a number'};
+        return request(app)
+        .patch('/api/articles/3')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid Format');
+        });
+    });
 });
