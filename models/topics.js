@@ -2,5 +2,6 @@ const db = require('../db/connection');
 
 exports.selectTopics = () => {
     return db.query('SELECT * FROM topics')
-    .then(({rows}) => rows);
+    .then(({rows}) => rows)
+    .catch(err => err);
 }

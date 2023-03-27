@@ -31,13 +31,16 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 
 ### GET `/not-a-route`
 
-- Status: ???
+- Status: 404
 
 ---
 
 ## Available Routes
 
 ### GET `/api/topics`
+
+- status: 404 (If mistyped endpoint, see unavailable routes.)
+- status: 500 (If database issues e.g. the databse does not exist.)
 
 -
 
