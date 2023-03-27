@@ -14,7 +14,7 @@ describe('Unvailavlbe Endpoint', () => {
         .expect(404)
         .then(({body}) => {
             expect(body).toEqual({});
-        })
+        });
     });
 });
 
@@ -120,5 +120,43 @@ describe('POST /api/articles/:article_id/comments', () => {
             return db.query('SELECT * FROM comments WHERE comment_id = $1', [comment.comment_id]);
         })
         .then(({rows}) => expect(rows[0]).not.toBe(undefined));
+    });
+    it('400: returns a bad request if the data to post is of the wrong format.', () => {
+        const item = {bad: 'item'};
+        return request(app)
+        .post('/api/articles/3/comments')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+    it('404: returns a not found if the username is not in the database.', () => {
+        const item = { username: 'HC62', body: 'This is a test comment.' };
+        return request(app)
+        .post('/api/articles/3/comments')
+        .send(item)
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Username Not Found'));
+    });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        const item = { username: 'lurker', body: 'This is a test comment.' };
+        return request(app)
+        .post('/api/articles/not_an_id/comments')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid ID');
+        });
+    });
+    it('404: returns a not found if no article matches ID.', () => {
+        const item = { username: 'lurker', body: 'This is a test comment.' };
+        return request(app)
+        .post('/api/articles/9999999/comments')
+        .send(item)
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('ID Not Found');
+        });
     });
 });
