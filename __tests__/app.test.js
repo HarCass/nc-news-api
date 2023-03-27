@@ -94,4 +94,13 @@ describe('GET /api/articles/:article_id/comments', () => {
             });
         });
     });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        return request(app)
+        .get('/api/articles/not_an_id/comments')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid ID');
+        });
+    });
 });
