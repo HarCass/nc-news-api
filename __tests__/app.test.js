@@ -7,7 +7,7 @@ const seed = require('../db/seeds/seed');
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
 
-describe('Unvailavlbe Endpoint', () => {
+describe('Unavailable Endpoint', () => {
     it('404: returns a status 404 and nothing else.', () => {
         return request(app)
         .get('/api/not_an_endpoint')
@@ -70,6 +70,28 @@ describe('GET /api/articles/:article_id', () => {
         .then(({body}) => {
             const {msg} = body;
             expect(msg).toBe('ID Not Found');
+        });
+    });
+});
+
+describe('GET /api/articles/:article_id/comments', () => {
+    it('200: return the commetns of the article with the specified ID.', () => {
+        return request(app)
+        .get('/api/articles/3/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments).toHaveLength(2);
+            comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 3
+                });
+            });
         });
     });
 });

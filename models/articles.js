@@ -7,3 +7,8 @@ exports.selectArticleById = (id) => {
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
     });
 }
+
+exports.selectCommentsByArticleId = (id) => {
+    return db.query('SELECT * FROM comments WHERE article_id = $1', [id])
+    .then(({rows}) => rows);
+}
