@@ -63,4 +63,13 @@ describe('GET /api/articles/:article_id', () => {
             expect(msg).toBe('Invalid ID');
         });
     });
+    it('404: returns a not found if no article matches ID.', () => {
+        return request(app)
+        .get('/api/articles/9999999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('ID Not Found');
+        });
+    });
 });

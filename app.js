@@ -1,7 +1,7 @@
 const express = require('express');
 const {getTopics} = require('./controllers/topics');
 const {getArticleById} = require('./controllers/articles');
-const {psqlErrHandler} = require('./controllers/errors');
+const {psqlErrHandler, customErrHandler} = require('./controllers/errors');
 
 const app = express();
 
@@ -10,6 +10,8 @@ app.get('/api/topics', getTopics);
 app.get('/api/articles/:article_id', getArticleById);
 
 app.use(psqlErrHandler);
+
+app.use(customErrHandler);
 
 app.use((err, req, res, next) => {
     res.status(500).send({msg: 'Internal Server Error'})
