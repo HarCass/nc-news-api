@@ -75,13 +75,14 @@ describe('GET /api/articles/:article_id', () => {
 });
 
 describe('GET /api/articles/:article_id/comments', () => {
-    it('200: return the commetns of the article with the specified ID.', () => {
+    it('200: return the comments of the article with the specified ID ordered by most recent.', () => {
         return request(app)
         .get('/api/articles/3/comments')
         .expect(200)
         .then(({body}) => {
             const {comments} = body;
             expect(comments).toHaveLength(2);
+            expect(comments).toBeSortedBy('created_at');
             comments.forEach(comment => {
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
@@ -101,6 +102,15 @@ describe('GET /api/articles/:article_id/comments', () => {
         .then(({body}) => {
             const {msg} = body;
             expect(msg).toBe('Invalid ID');
+        });
+    });
+    it('404: returns a not found if there are no comments for given ID.', () => {
+        return request(app)
+        .get('/api/articles/9999999/comments')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Comments Not Found');
         });
     });
 });
