@@ -35,3 +35,41 @@ describe('GET /api/topics', () => {
         });
     });
 });
+
+describe('GET /api/articles/:article_id', () => {
+    it('200: returns an article with the specified ID.', () => {
+        return request(app)
+        .get('/api/articles/3')
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: 3,
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String)
+            });
+        });
+    });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        return request(app)
+        .get('/api/articles/not_an_id')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid ID');
+        });
+    });
+    it('404: returns a not found if no article matches ID.', () => {
+        return request(app)
+        .get('/api/articles/9999999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('ID Not Found');
+        });
+    });
+});
