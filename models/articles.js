@@ -32,3 +32,16 @@ exports.selectCommentsByArticleId = (id) => {
         });
     });
 }
+
+exports.insertCommentsByArticleId = (id, data) => {
+    const valuesArr = [data.username, data.body, id];
+    const sql = `
+    INSERT INTO comments
+    (author, body, article_id)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *
+    `;
+    return db.query(sql, valuesArr)
+    .then(({rows}) => rows[0]);
+}
