@@ -99,3 +99,26 @@ describe('GET /api/articles', () => {
         });
     });
 });
+
+describe('POST /api/articles/:article_id/comments', () => {
+    it('201: adds given comment to the database and returns the added comment.', () => {
+        const item = { username: 'lurker', body: 'This is a test comment.' };
+        return request(app)
+        .post('/api/articles/3/comments')
+        .send(item)
+        .expect(201)
+        .then(({body}) => {
+            const {comment} = body;
+            expect(comment).toMatchObject({
+                comment_id: expect.any(Number),
+                body: expect.any(String),
+                article_id: 3,
+                author: expect.any(String),
+                votes: 0,
+                created_at: expect.any(String)
+            });
+            return db.query('SELECT * FROM comments WHERE comment_id = $1', [comment.comment_id]);
+        })
+        .then(({rows}) => expect(rows[0]).not.toBe(undefined));
+    });
+});
