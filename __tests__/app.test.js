@@ -7,6 +7,17 @@ const seed = require('../db/seeds/seed');
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
 
+describe('Unvailavlbe Endpoint', () => {
+    it('404: returns a status 404 and nothing else.', () => {
+        return request(app)
+        .get('/api/not_an_endpoint')
+        .expect(404)
+        .then(({body}) => {
+            expect(body).toEqual({});
+        })
+    });
+});
+
 describe('GET /api/topics', () => {
     it('200: returns an array of all the topics.', () => {
         return request(app)
