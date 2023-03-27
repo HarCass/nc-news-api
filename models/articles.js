@@ -32,3 +32,8 @@ exports.selectCommentsByArticleId = (id) => {
         });
     });
 }
+
+exports.updateArticleById = (id, data) => {
+    return db.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [data.inc_votes, id])
+    .then(({rows}) => rows[0]);
+}
