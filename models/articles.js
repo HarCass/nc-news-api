@@ -7,3 +7,15 @@ exports.selectArticleById = (id) => {
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
     });
 }
+
+exports.selectArticles = () => {
+    const sql = `
+    SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, CAST(COUNT(comments) AS INT) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC
+    `
+    return db.query(sql)
+    .then(({rows}) => rows);
+}
