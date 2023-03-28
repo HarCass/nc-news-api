@@ -62,6 +62,7 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 - Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
 - `username` that does not exist
 - Data to post in bad format (e.g {bad: 'format'})
+- Missing properties on request body (e.g. `{username: 'something'}`)
 
 ### GET `/api/articles/:article_id/comments`
 
@@ -82,8 +83,9 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 
 ### DELETE `/api/comments/:comment_id`
 
--
+- `comment_id` that is not in database
 
 ### GET `/api`
 
--
+- status: 404 (If mistyped endpoint, see unavailable routes.)
+- status: 500 (If database issues e.g. the databse does not exist.)

@@ -2,7 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data/index');
+const endpointsJSON = require('../endpoints.json');
 const seed = require('../db/seeds/seed');
+const { end } = require('../db/connection');
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
@@ -343,7 +345,7 @@ describe('GET /api', () => {
         .expect(200)
         .then(({body}) => {
             const {endpoints} = body;
-            expect(endpoints).toEqual({});
+            expect(endpoints).toEqual(endpointsJSON);
         });
     });
 });
