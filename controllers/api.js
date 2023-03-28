@@ -1,7 +1,4 @@
-const {fetchEndpoints} = require('../models/api');
-
-exports.getEndpoints = (req, res, next) => {
-    return fetchEndpoints()
-    .then(endpoints => res.status(200).send({endpoints}))
-    .catch(next);
+exports.getEndpoints = (req, res) => {
+    const endpoints = require('../endpoints.json');
+    res.status(200).send({endpoints});
 }
