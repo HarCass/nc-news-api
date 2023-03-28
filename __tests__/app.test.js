@@ -120,14 +120,20 @@ describe('GET /api/articles', () => {
             });
         });
     });
-    it('200: returns an empty array if the specified topic does not exist.', () => {
+    it('200: returns an empty array if the specified topic has no articles.', () => {
         return request(app)
-        .get('/api/articles?topic=not_a_topic')
+        .get('/api/articles?topic=paper')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
             expect(articles).toEqual([]);
         });
+    });
+    it('404: returns a not found if the topic does not exist.', () => {
+        return request(app)
+        .get('/api/articles?topic=not_a_topic')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Topic Not Found'));
     });
     it('200: returns an array of all the articles, the articles should be sorted by the specified column in descending order.', () => {
         return request(app)
