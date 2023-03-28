@@ -8,15 +8,20 @@ exports.selectArticleById = (id) => {
     });
 }
 
-exports.selectArticles = () => {
-    const sql = `
+exports.selectArticles = (topic) => {
+    const queryParams = [];
+    let sql = `
     SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, CAST(COUNT(comments) AS INT) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC
     `
-    return db.query(sql)
+    if(topic) {
+        sql += '\nHAVING topic = $1';
+        queryParams.push(topic);
+    }
+    sql +='\nORDER BY articles.created_at DESC';
+    return db.query(sql, queryParams)
     .then(({rows}) => rows)
     .catch(err => err);
 }
