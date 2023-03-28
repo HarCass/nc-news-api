@@ -219,7 +219,7 @@ describe('POST /api/articles/:article_id/comments', () => {
     });
 });
 
-describe.only('DELETE /api/comments/:comment_id', () => {
+describe('DELETE /api/comments/:comment_id', () => {
     it('204: returns a no content and deletes the specified comment from the database.', () => {
         return request(app)
         .delete('/api/comments/3')
@@ -237,6 +237,15 @@ describe.only('DELETE /api/comments/:comment_id', () => {
         .then(({body}) => {
             const {msg} = body;
             expect(msg).toBe('Invalid ID');
+        });
+    });
+    it('404: returns a not found if the ID does not exist.', () => {
+        return request(app)
+        .delete('/api/comments/99999')
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('ID Not Found');
         });
     });
 });
