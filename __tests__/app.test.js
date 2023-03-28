@@ -98,7 +98,7 @@ describe('GET /api/articles', () => {
             });
         });
     });
-    it('200: returns an array of all the articles of the specified topic, the articles should be sorted by date in descending order.', () => {
+    it('200: returns an array of all the articles of the specified topic if that topic exists, the articles should be sorted by date in descending order.', () => {
         return request(app)
         .get('/api/articles?topic=mitch')
         .expect(200)
@@ -106,6 +106,93 @@ describe('GET /api/articles', () => {
             const {articles} = body;
             expect(articles).toHaveLength(11);
             expect(articles).toBeSortedBy('created_at', {descending: true});
+            articles.forEach(article => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: 'mitch',
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(Number)
+                });
+            });
+        });
+    });
+    it('200: returns an empty array if the specified topic does not exist.', () => {
+        return request(app)
+        .get('/api/articles?topic=not_a_topic')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toEqual([]);
+        });
+    });
+    it('200: returns an array of all the articles, the articles should be sorted by the specified column in descending order.', () => {
+        return request(app)
+        .get('/api/articles?sort_by=author')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toHaveLength(12);
+            expect(articles).toBeSortedBy('author', {descending: true});
+            articles.forEach(article => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(Number)
+                });
+            });
+        });
+    });
+    it('400: returns a bad request if the specified column to sort by does not exist.', () => {
+        return request(app)
+        .get('/api/articles?sort_by=not_a_column')
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Sort'));
+    });
+    it('200: returns an array of all the articles, the articles should be ordered in asc or desc when specified.', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toHaveLength(12);
+            expect(articles).toBeSortedBy('created_at');
+            articles.forEach(article => {
+                expect(article).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(Number)
+                });
+            });
+        });
+    });
+    it('400: returns a bad request if the specified order is invalid.', () => {
+        return request(app)
+        .get('/api/articles?order=not_an_order')
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Order'));
+    });
+    it('200: returns a correct array of articles, with a combination of queries.', () => {
+        return request(app)
+        .get('/api/articles?topic=mitch&sort_by=author&order=asc')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toHaveLength(11);
+            expect(articles).toBeSortedBy('author');
             articles.forEach(article => {
                 expect(article).toMatchObject({
                     author: expect.any(String),

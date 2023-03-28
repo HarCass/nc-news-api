@@ -8,7 +8,11 @@ exports.selectArticleById = (id) => {
     });
 }
 
-exports.selectArticles = (topic) => {
+exports.selectArticles = (topic, sort = 'created_at', order = 'desc') => {
+    if (!['created_at', 'author', 'article_id', 'title', 'topic', 'votes', 'article_img_url', 'comment_count'].includes(sort)) return Promise.reject({status: 400, msg: 'Invalid Sort'});
+
+    if (!['asc', 'desc'].includes(order)) return Promise.reject({status: 400, msg: 'Invalid Order'});
+
     const queryParams = [];
     let sql = `
     SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, CAST(COUNT(comments) AS INT) AS comment_count
@@ -20,7 +24,9 @@ exports.selectArticles = (topic) => {
         sql += '\nHAVING topic = $1';
         queryParams.push(topic);
     }
-    sql +='\nORDER BY articles.created_at DESC';
+
+    sql += `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
+    
     return db.query(sql, queryParams)
     .then(({rows}) => rows)
     .catch(err => err);
