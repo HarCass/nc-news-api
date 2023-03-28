@@ -1,1 +1,3 @@
-exports.fetchEndpoints = () => {}
+exports.fetchEndpoints = () => {
+    return Promise.resolve({});
+}

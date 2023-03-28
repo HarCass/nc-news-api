@@ -11,16 +11,70 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
+          "author": "Leegold",
           "title": "Seafood substitutions are increasing",
+          "article_id": 3,
           "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1527695953341,
+          "votes": 5,
+          "article_img_url": "https://someurl.co.uk",
+          "comment_count": 2
         }
+      ]
+    }
+  },
+  "GET /api/articles/:articles_id": {
+    "description": "serves the specific article",
+    "exampleResponse": {
+      "article":{
+        "author": "Leegold",
+        "title": "Seafood substitutions are increasing",
+        "article_id": 3,
+        "body": "ipsum morem",
+        "topic": "cooking",
+        "created_at": 1527695953341,
+        "votes": 5,
+        "article_img_url": "https://someurl.co.uk",
+        "comment_count": 2
+        }
+    }
+  },
+  "PATCH /api/articles/:articles_id": {
+    "description": "updates the votes of a specified article by the amount given",
+    "data_format": {"inc_votes": 10},
+    "exampleResponse": {
+      "article":{
+        "author": "Leegold",
+        "title": "Seafood substitutions are increasing",
+        "article_id": 3,
+        "body": "ipsum morem",
+        "topic": "cooking",
+        "created_at": 1527695953341,
+        "votes": 15,
+        "article_img_url": "https://someurl.co.uk",
+        "comment_count": 2
+        }
+    }
+  },
+  "GET /api/articles/:articles_id/comments": {
+    "description": "returns an array of comments of the specified article",
+    "exampleResponse": {
+      "comments":[
+        {
+          "author": "Leegold",
+          "title": "Seafood substitutions are increasing",
+          "article_id": 3,
+          "body": "ipsum morem",
+          "topic": "cooking",
+          "created_at": 1527695953341,
+          "votes": 15,
+          "article_img_url": "https://someurl.co.uk",
+          "comment_count": 2
+          }
       ]
     }
   }

@@ -335,3 +335,15 @@ describe('GET /api/users', () => {
         });
     });
 });
+
+describe('GET /api', () => {
+    it('200: returns a JSON of all the endpoints and their descirption.', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            const {endpoints} = body;
+            expect(endpoints).toEqual({});
+        });
+    });
+});
