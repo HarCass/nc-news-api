@@ -2,7 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const db = require('../db/connection');
 const testData = require('../db/data/test-data/index');
+const endpointsJSON = require('../endpoints.json');
 const seed = require('../db/seeds/seed');
+const { end } = require('../db/connection');
 
 afterAll(() => db.end());
 beforeEach(() => seed(testData));
@@ -448,6 +450,18 @@ describe('GET /api/users', () => {
                     avatar_url: expect.any(String)
                 });
             });
+        });
+    });
+});
+
+describe('GET /api', () => {
+    it('200: returns a JSON of all the endpoints and their descirption.', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            const {endpoints} = body;
+            expect(endpoints).toEqual(endpointsJSON);
         });
     });
 });

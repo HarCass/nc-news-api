@@ -3,11 +3,14 @@ const {getTopics} = require('./controllers/topics');
 const {getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById} = require('./controllers/articles');
 const {delCommentById} = require('./controllers/comments');
 const {getUsers} = require('./controllers/users');
+const {getEndpoints} = require('./controllers/api');
 const {psqlErrHandler, customErrHandler} = require('./controllers/errors');
 
 const app = express();
 
 app.use(express.json());
+
+app.get('/api', getEndpoints)
 
 app.get('/api/topics', getTopics);
 
