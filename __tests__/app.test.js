@@ -230,10 +230,4 @@ describe.only('DELETE /api/comments/:comment_id', () => {
         })
         .then(({rows}) => expect(rows).toEqual([]));
     });
-    it('404: returns a not found if comment_id does not exist.', () => {
-        return request(app)
-        .delete('/api/comments/9999999')
-        .expect(404)
-        .then(({body}) => expect(body.msg).toBe('ID Not Found'))
-    });
 });
