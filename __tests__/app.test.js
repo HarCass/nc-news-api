@@ -152,9 +152,9 @@ describe('GET /api/articles/:article_id/comments', () => {
 
 describe('PATCH/api/articles/:article_id', () => {
     it('201: updates the votes of the specified article by the amount sent and returns the updated article.', () => {
-        const item = {inc_votes: 10};
+        const item = {inc_votes: -10};
         return request(app)
-        .patch('/api/articles/3')
+        .patch('/api/articles/1')
         .send(item)
         .expect(201)
         .then(({body}) => {
@@ -162,10 +162,10 @@ describe('PATCH/api/articles/:article_id', () => {
             expect(article).toMatchObject({
                 author: expect.any(String),
                 title: expect.any(String),
-                article_id: 3,
+                article_id: 1,
                 topic: expect.any(String),
                 created_at: expect.any(String),
-                votes: 10,
+                votes: 90,
                 article_img_url: expect.any(String),
                 body: expect.any(String)
             });
@@ -182,7 +182,7 @@ describe('PATCH/api/articles/:article_id', () => {
             expect(msg).toBe('Invalid ID');
         });
     });
-    it('404: returns a not found if there are no comments for given ID and ID does not exist.', () => {
+    it('404: returns a not found if ID does not exist.', () => {
         const item = {inc_votes: 10};
         return request(app)
         .patch('/api/articles/9999999')
