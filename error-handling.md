@@ -42,8 +42,6 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 - status: 404 (If mistyped endpoint, see unavailable routes.)
 - status: 500 (If database issues e.g. the databse does not exist.)
 
--
-
 ### GET `/api/users/:username`
 
 -
@@ -60,11 +58,15 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 
 ### POST `/api/articles/:article_id/comments`
 
--
+- Bad `article_id` (e.g. `/dog`)
+- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- `username` that does not exist
+- Data to post in bad format (e.g {bad: 'format'})
 
 ### GET `/api/articles/:article_id/comments`
 
--
+- Bad `article_id` (e.g. `/dog`)
+- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
 
 ### GET `/api/articles`
 
