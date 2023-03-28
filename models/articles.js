@@ -1,7 +1,14 @@
 const db = require('../db/connection');
 
 exports.selectArticleById = (id) => {
-    return db.query('SELECT * FROM articles WHERE article_id = $1', [id])
+    const sql = `
+    SELECT articles.*, CAST(COUNT(comments) AS INT) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    GROUP BY articles.article_id
+    HAVING articles.article_id = $1
+    `
+    return db.query(sql, [id])
     .then(({rows}) => {
         if(rows.length) return rows[0];
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
