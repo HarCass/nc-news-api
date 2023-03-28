@@ -1,4 +1,3 @@
-const { response } = require('../app');
 const {selectTopics} = require('../models/topics');
 
 exports.getTopics = (req, res, next) => {
