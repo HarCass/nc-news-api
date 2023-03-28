@@ -1,4 +1,4 @@
-const {selectArticleById, selectArticles, selectCommentsByArticleId, insertCommentsByArticleId, updateArticleById} = require('../models/articles');
+const {selectArticleById, selectArticles, selectCommentsByArticleId, insertCommentsByArticleId, updateArticleById, checkTopicExists} = require('../models/articles');
 
 exports.getArticleById = (req, res, next) => {
     const {article_id} = req.params;
@@ -8,8 +8,11 @@ exports.getArticleById = (req, res, next) => {
 }
 
 exports.getArticles = (req, res, next) => {
-    return selectArticles()
-    .then(articles => res.status(200).send({articles}))
+    const {topic, sort_by, order} = req.query;
+    const promiseArr = [selectArticles(topic, sort_by, order)];
+    if (topic) promiseArr.push(checkTopicExists(topic));
+    return Promise.all(promiseArr)
+    .then(([articles]) => res.status(200).send({articles}))
     .catch(next);
 }
 

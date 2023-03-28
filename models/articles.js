@@ -8,15 +8,26 @@ exports.selectArticleById = (id) => {
     });
 }
 
-exports.selectArticles = () => {
-    const sql = `
+exports.selectArticles = (topic, sort = 'created_at', order = 'desc') => {
+    if (!['created_at', 'author', 'article_id', 'title', 'topic', 'votes', 'article_img_url', 'comment_count'].includes(sort)) return Promise.reject({status: 400, msg: 'Invalid Sort'});
+
+    if (!['asc', 'desc'].includes(order)) return Promise.reject({status: 400, msg: 'Invalid Order'});
+
+    const queryParams = [];
+    let sql = `
     SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, CAST(COUNT(comments) AS INT) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC
     `
-    return db.query(sql)
+    if(topic) {
+        sql += '\nHAVING topic = $1';
+        queryParams.push(topic);
+    }
+
+    sql += `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
+    
+    return db.query(sql, queryParams)
     .then(({rows}) => rows)
     .catch(err => err);
 }
@@ -52,5 +63,12 @@ exports.updateArticleById = (id, data) => {
     .then(({rows}) => {
         if(rows.length) return rows[0];
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
+    });
+}
+
+exports.checkTopicExists = (topic) => {
+    return db.query('SELECT * FROM topics WHERE slug = $1', [topic])
+    .then(({rows}) => {
+        if (!rows.length) return Promise.reject({status: 404, msg: 'Topic Not Found'});
     });
 }
