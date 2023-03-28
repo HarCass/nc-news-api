@@ -219,6 +219,73 @@ describe('POST /api/articles/:article_id/comments', () => {
     });
 });
 
+describe('PATCH/api/articles/:article_id', () => {
+    it('200: updates the votes of the specified article by the amount sent and returns the updated article.', () => {
+        const item = {inc_votes: -10};
+        return request(app)
+        .patch('/api/articles/1')
+        .send(item)
+        .expect(200)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: 1,
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: 90,
+                article_img_url: expect.any(String),
+                body: expect.any(String)
+            });
+        });
+    });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        const item = {inc_votes: 10};
+        return request(app)
+        .patch('/api/articles/not_an_id')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid ID');
+        });
+    });
+    it('404: returns a not found if ID does not exist.', () => {
+        const item = {inc_votes: 10};
+        return request(app)
+        .patch('/api/articles/9999999')
+        .send(item)
+        .expect(404)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('ID Not Found');
+        });
+    });
+    it('400: returns a bad request if the data is missing inc_votes.', () => {
+        const item = {};
+        return request(app)
+        .patch('/api/articles/3')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid Format');
+        });
+    });
+    it('400: returns a bad request if inc_votes value is not a number.', () => {
+        const item = {inc_votes: 'Not a number'};
+        return request(app)
+        .patch('/api/articles/3')
+        .send(item)
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid Format');
+        });
+    });
+});
+
 describe('DELETE /api/comments/:comment_id', () => {
     it('204: returns a no content and deletes the specified comment from the database.', () => {
         return request(app)
