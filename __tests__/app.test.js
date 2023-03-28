@@ -218,3 +218,22 @@ describe('POST /api/articles/:article_id/comments', () => {
         });
     });
 });
+
+describe.only('DELETE /api/comments/:comment_id', () => {
+    it('204: returns a no content and deletes the specified comment from the database.', () => {
+        return request(app)
+        .delete('/api/comments/3')
+        .expect(204)
+        .then(({body}) => expect(body).toEqual({}))
+        .then(() => {
+            return db.query('SELECT * FROM comments WHERE comment_id = 3')
+        })
+        .then(({rows}) => expect(rows).toEqual([]));
+    });
+    it('404: returns a not found if comment_id does not exist.', () => {
+        return request(app)
+        .delete('/api/comments/9999999')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('ID Not Found'))
+    });
+});
