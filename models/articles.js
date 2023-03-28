@@ -33,6 +33,19 @@ exports.selectCommentsByArticleId = (id) => {
     });
 }
 
+exports.insertCommentsByArticleId = (id, data) => {
+    const valuesArr = [data.username, data.body, id];
+    const sql = `
+    INSERT INTO comments
+    (author, body, article_id)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *
+    `;
+    return db.query(sql, valuesArr)
+    .then(({rows}) => rows[0]);
+}
+
 exports.updateArticleById = (id, data) => {
     if(isNaN(data.inc_votes)) return Promise.reject({status: 400, msg: 'Invalid Format'});
     return db.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [data.inc_votes, id])
