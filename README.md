@@ -1,4 +1,5 @@
 # Northcoders News API
+Live version: https://hc-nc-news-api.onrender.com/
 
 ## Environment Setup
 To successfully connect to the databases locally you must first setup your environment variables.
