@@ -230,4 +230,13 @@ describe.only('DELETE /api/comments/:comment_id', () => {
         })
         .then(({rows}) => expect(rows).toEqual([]));
     });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        return request(app)
+        .delete('/api/comments/not_an_id')
+        .expect(400)
+        .then(({body}) => {
+            const {msg} = body;
+            expect(msg).toBe('Invalid ID');
+        });
+    });
 });
