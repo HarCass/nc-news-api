@@ -151,12 +151,12 @@ describe('GET /api/articles/:article_id/comments', () => {
 });
 
 describe('PATCH/api/articles/:article_id', () => {
-    it('201: updates the votes of the specified article by the amount sent and returns the updated article.', () => {
+    it('200: updates the votes of the specified article by the amount sent and returns the updated article.', () => {
         const item = {inc_votes: -10};
         return request(app)
         .patch('/api/articles/1')
         .send(item)
-        .expect(201)
+        .expect(200)
         .then(({body}) => {
             const {article} = body;
             expect(article).toMatchObject({
