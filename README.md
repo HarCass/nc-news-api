@@ -1,5 +1,5 @@
 # Northcoders News API
-Live version: https://hc-nc-news-api.onrender.com/
+Live version: https://hc-nc-news-api.onrender.com/api
 - - - 
 ## Summary
 - - -
@@ -8,7 +8,7 @@ This is an API designed to query an SQL database, containing information about n
 ## Setup Instructions
 - - -
 ### Cloning the Repo
-To clone this repo you must have git installed on your system. Then navigate to the desired location you wish for the repo to be conatined in and run the following command in your terminal
+To clone this repo you must have git installed on your system. Then navigate to the desired location you wish for the repo to be contained in and run the following command in your terminal
 > `git clone https://github.com/HarCass/nc-news-api`
 
 You may be prompted for your github details.
@@ -39,7 +39,7 @@ This will seed the development database, you can then view it via Postgres in yo
 
 this will start the application so you can interact with the databse via the API (You can make requests to it with an application such as insomnia, the application runs on PORT 8080 by default).
 
-If you wish to also seed the test databse you can do so by running the following in your terminal
+If you wish to also seed the test database you can do so by running the following in your terminal
 >`npm test app`
 
 This will run some tests for the application to make sure it is working correctly and simultaneously seed the test databse.
