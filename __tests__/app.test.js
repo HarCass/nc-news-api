@@ -487,7 +487,7 @@ describe('GET /api/users/:username', () => {
     });
 });
 
-describe.only('PATCH /api/comments/:comment_id', () => {
+describe('PATCH /api/comments/:comment_id', () => {
     it('200: updates the specified comments votes by the amount sent in the request and returns the updated comment.', () => {
         const item = { inc_votes: -10 };
         return request(app)
