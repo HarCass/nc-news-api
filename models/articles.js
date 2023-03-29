@@ -35,8 +35,7 @@ exports.selectArticles = (topic, sort = 'created_at', order = 'desc') => {
     sql += `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
     
     return db.query(sql, queryParams)
-    .then(({rows}) => rows)
-    .catch(err => err);
+    .then(({rows}) => rows);
 }
 
 exports.selectCommentsByArticleId = (id) => {
