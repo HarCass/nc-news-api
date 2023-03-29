@@ -486,3 +486,56 @@ describe('GET /api/users/:username', () => {
         .then(({body}) => expect(body.msg).toBe('User Not Found'));
     });
 });
+
+describe('PATCH /api/comments/:comment_id', () => {
+    it('200: updates the specified comments votes by the amount sent in the request and returns the updated comment.', () => {
+        const item = { inc_votes: -10 };
+        return request(app)
+        .patch('/api/comments/3')
+        .send(item)
+        .expect(200)
+        .then(({body}) => {
+            const {comment} = body;
+            expect(comment).toMatchObject({
+                comment_id: 3,
+                body: expect.any(String),
+                votes: 90,
+                author: expect.any(String),
+                article_id: expect.any(Number),
+                created_at: expect.any(String)
+            });
+        });
+    });
+    it('400: returns a bad request if the ID given is invalid.', () => {
+        const item = { inc_votes: -10 };
+        return request(app)
+        .patch('/api/comments/not_an_id')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid ID'));
+    });
+    it('404: returns a not found if the ID given does not exist.', () => {
+        const item = { inc_votes: -10 };
+        return request(app)
+        .patch('/api/comments/9999999')
+        .send(item)
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('ID Not Found'));
+    });
+    it('400: returns a bad request if the request body is missing inc_votes.', () => {
+        const item = { bad: 'item' };
+        return request(app)
+        .patch('/api/comments/3')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+    it('400: returns a bad request if inc_votes is not a number.', () => {
+        const item = { inc_votes: 'not a number' };
+        return request(app)
+        .patch('/api/comments/3')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+});
