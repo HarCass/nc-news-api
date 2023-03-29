@@ -464,3 +464,25 @@ describe('GET /api', () => {
         });
     });
 });
+
+describe('GET /api/users/:username', () => {
+    it('200: returns the specified user.', () => {
+        return request(app)
+        .get('/api/users/rogersop')
+        .expect(200)
+        .then(({body}) => {
+            const {user} = body;
+            expect(user).toMatchObject({
+                username: 'rogersop',
+                avatar_url: expect.any(String),
+                name: expect.any(String)
+            });
+        });
+    });
+    it('404: returns a not found if the username does not exist.', () => {
+        return request(app)
+        .get('/api/users/not_a_user')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('User Not Found'));
+    });
+});
