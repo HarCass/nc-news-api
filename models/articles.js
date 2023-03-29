@@ -63,9 +63,9 @@ exports.insertCommentsByArticleId = (id, data) => {
     .then(({rows}) => rows[0]);
 }
 
-exports.updateArticleById = (id, data) => {
-    if(isNaN(data.inc_votes)) return Promise.reject({status: 400, msg: 'Invalid Format'});
-    return db.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [data.inc_votes, id])
+exports.updateArticleById = (id, inc_votes) => {
+    if(isNaN(inc_votes)) return Promise.reject({status: 400, msg: 'Invalid Format'});
+    return db.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [inc_votes, id])
     .then(({rows}) => {
         if(rows.length) return rows[0];
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
@@ -77,4 +77,37 @@ exports.checkTopicExists = (topic) => {
     .then(({rows}) => {
         if (!rows.length) return Promise.reject({status: 404, msg: 'Topic Not Found'});
     });
+}
+
+exports.insertArticle = (data) => {
+    const valuesArr = [data.author, data.title, data.body, data.topic];
+    let sql = `
+    WITH new_article
+    AS
+    (INSERT INTO articles
+    (author, title, body, topic`
+    
+    if(data.article_img_url) {
+        sql += `, article_img_url)
+        VALUES
+        ($1, $2, $3, $4, $5)
+        RETURNING *)
+        `
+        valuesArr.push(data.article_img_url);
+    } else {
+        sql += `)
+        VALUES
+        ($1, $2, $3, $4)
+        RETURNING *)
+        `
+    }
+
+    sql += `
+    SELECT DISTINCT new_article.*, CAST(COUNT(comments) AS INT) AS comment_count
+    FROM new_article
+    LEFT JOIN comments ON comments.article_id = new_article.article_id
+    GROUP BY new_article.article_id, new_article.author, new_article.title, new_article.body, new_article.topic, new_article.article_img_url, new_article.votes, new_article.created_at
+    `
+    return db.query(sql, valuesArr)
+    .then(({rows}) => rows[0]);
 }
