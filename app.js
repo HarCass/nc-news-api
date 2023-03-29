@@ -1,10 +1,7 @@
 const express = require('express');
-const {getTopics} = require('./controllers/topics');
-const {getArticleById, getArticles, getCommentsByArticleId, postCommentsByArticleId, patchArticleById} = require('./controllers/articles');
-const {delCommentById} = require('./controllers/comments');
-const {getUsers} = require('./controllers/users');
-const {getEndpoints} = require('./controllers/api');
-const {psqlErrHandler, customErrHandler} = require('./controllers/errors');
+const { getEndpoints } = require('./controllers/api');
+const { psqlErrHandler, customErrHandler } = require('./controllers/errors');
+const { topicsRouter, articlesRouter, commentsRouter, usersRouter } = require('./routes/index');
 
 const app = express();
 
@@ -12,21 +9,13 @@ app.use(express.json());
 
 app.get('/api', getEndpoints)
 
-app.get('/api/topics', getTopics);
+app.use('/api/topics', topicsRouter);
 
-app.get('/api/articles/:article_id', getArticleById);
+app.use('/api/articles', articlesRouter);
 
-app.get('/api/articles', getArticles);
+app.use('/api/comments', commentsRouter);
 
-app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
-
-app.post('/api/articles/:article_id/comments', postCommentsByArticleId);
-
-app.patch('/api/articles/:article_id', patchArticleById);
-
-app.delete('/api/comments/:comment_id', delCommentById)
-
-app.get('/api/users', getUsers);
+app.use('/api/users', usersRouter);
 
 app.use(psqlErrHandler);
 
