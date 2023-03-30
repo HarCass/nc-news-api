@@ -355,7 +355,9 @@ describe('PATCH/api/articles/:article_id', () => {
                 article_img_url: expect.any(String),
                 body: expect.any(String)
             });
-        });
+            return db.query('SELECT votes FROM articles WHERE article_id = 1')
+        })
+        .then(({rows}) => expect(rows[0].votes).toBe(90));
     });
     it('400: returns a bad request if the ID is invalid.', () => {
         const item = {inc_votes: 10};
@@ -504,7 +506,9 @@ describe('PATCH /api/comments/:comment_id', () => {
                 article_id: expect.any(Number),
                 created_at: expect.any(String)
             });
-        });
+            return db.query('SELECT votes FROM comments WHERE comment_id = 3');
+        })
+        .then(({rows}) => expect(rows[0].votes).toBe(90));
     });
     it('400: returns a bad request if the ID given is invalid.', () => {
         const item = { inc_votes: -10 };
@@ -566,7 +570,9 @@ describe('POST /api/articles', () => {
                 created_at: expect.any(String),
                 comment_count: 0
             });
-        });
+            return db.query('SELECT * FROM articles WHERE article_id = $1', [article.article_id]);
+        })
+        .then(({rows}) => expect(rows[0]).not.toBe(undefined));
     });
     it('201: adds the article to the database and returns the new article even if image url is missing.', () => {
         const item = {
@@ -850,5 +856,40 @@ describe('GET /api/articles/:article_id/comments Pagination', () => {
             .expect(400)
             .then(({body}) => expect(body.msg).toBe('Invalid Page'));
         });
+    });
+});
+
+describe('POST /api/topics', () => {
+    it('201: adds a new topic and returns the created topic.', () => {
+        const item = {slug: 'newtopic', description: 'A new topic'}
+        return request(app)
+        .post('/api/topics')
+        .send(item)
+        .expect(201)
+        .then(({body}) => {
+            const {topic} = body;
+            expect(topic).toMatchObject({
+                slug: 'newtopic',
+                description: 'A new topic'
+            });
+            return db.query("SELECT * FROM topics WHERE slug = 'newtopic'");
+        })
+        .then(({rows}) => expect(rows[0]).not.toBe(undefined));
+    });
+    it('400: returns a bad request if request body is missing slug.', () => {
+        const item = {description: 'A new topic'}
+        return request(app)
+        .post('/api/topics')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+    it('400: returns a bad request if topic already exists.', () => {
+        const item = {slug: 'mitch', description: 'Not a new topic'}
+        return request(app)
+        .post('/api/topics')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
     });
 });

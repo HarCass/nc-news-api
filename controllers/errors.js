@@ -6,6 +6,7 @@ exports.psqlErrHandler = (err, req, res, next) => {
         else if (err.constraint === 'articles_topic_fkey') res.status(404).send({msg: 'Topic Not Found'});
         else res.status(404).send({msg: 'Username Not Found'});
     }
+    else if (err.code === '23505') res.status(400).send({msg: 'Invalid Format'});
     else next(err);
 }
 
