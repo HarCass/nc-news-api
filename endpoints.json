@@ -11,7 +11,13 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["topic", "sort_by", "order"],
+    "queries": {
+      "topic": "topic_name",
+      "sort_by": "asc OR desc, defualt desc",
+      "order": "property_name",
+      "limit": "some integer or 'all', default 10",
+      "p": "some integer e.g. 1, ignored if limit is 'all'"
+    },
     "exampleResponse": {
       "articles": [
         {
@@ -24,7 +30,8 @@
           "article_img_url": "https://someurl.co.uk",
           "comment_count": 2
         }
-      ]
+      ],
+      "total_count": 1
     }
   },
   "POST /api/articles": {
@@ -85,6 +92,10 @@
   },
   "GET /api/articles/:articles_id/comments": {
     "description": "returns an array of comments of the specified article",
+    "queries": {
+      "limit": "some Integer or 'all', default 10",
+      "p": "some integer e.g. 1, ignored if limit is 'all'"
+    },
     "exampleResponse": {
       "comments":[
         {
@@ -95,7 +106,8 @@
           "body": "ipsum morem",
           "article_id": 3
         }
-      ]
+      ],
+      "total_count": 1
     }
   },
   "POST /api/articles/:articles_id/comments": {
@@ -134,7 +146,6 @@
   },
   "GET /api/users": {
     "description": "serves an array of all users",
-    "queries": [],
     "exampleResponse": {
       "users": [
       {
@@ -147,7 +158,6 @@
   },
   "GET /api/users/:username": {
     "description": "serves specified user",
-    "queries": [],
     "exampleResponse": {
       "users":{
       "username": "Legolad",

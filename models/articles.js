@@ -1,3 +1,4 @@
+const { query } = require('../db/connection');
 const db = require('../db/connection');
 
 exports.selectArticleById = (id) => {
@@ -15,27 +16,40 @@ exports.selectArticleById = (id) => {
     });
 }
 
-exports.selectArticles = (topic, sort = 'created_at', order = 'desc') => {
+exports.selectArticles = (topic, sort = 'created_at', order = 'desc', limit = 10, p = 1) => {
     if (!['created_at', 'author', 'article_id', 'title', 'topic', 'votes', 'article_img_url', 'comment_count'].includes(sort)) return Promise.reject({status: 400, msg: 'Invalid Sort'});
 
     if (!['asc', 'desc'].includes(order)) return Promise.reject({status: 400, msg: 'Invalid Order'});
 
+    if(isNaN(limit) && limit !== 'all') return Promise.reject({status: 400, msg: 'Invalid Limit'});
+
+    if(isNaN(p)) return Promise.reject({status: 400, msg: 'Invalid Page'});
+
     const queryParams = [];
-    let sql = `
+    let articleSql = `
     SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, CAST(COUNT(comments) AS INT) AS comment_count
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
     `
     if(topic) {
-        sql += '\nHAVING topic = $1';
+        articleSql += `\nHAVING topic = $1`;
         queryParams.push(topic);
     }
 
-    sql += `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
+    articleSql += `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
+
+    articleSql += `\nLIMIT ${limit}`;
+
+    if (limit !== 'all') {
+        articleSql += `\nOFFSET ${limit * (p - 1)}`;
+    }
+
+    let countSql = 'SELECT * FROM articles';
+    if(topic) countSql += ' WHERE topic = $1';
     
-    return db.query(sql, queryParams)
-    .then(({rows}) => rows);
+    return Promise.all([db.query(articleSql, queryParams), db.query(countSql, queryParams)])
+    .then(([{rows}, {rowCount}]) => [rows, rowCount]);
 }
 
 exports.selectCommentsByArticleId = (id) => {
