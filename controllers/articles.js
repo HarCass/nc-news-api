@@ -5,7 +5,9 @@ const {
     insertCommentsByArticleId,
     updateArticleById,
     checkTopicExists,
-    insertArticle
+    insertArticle,
+    removeArticleById,
+    checkArticleIdExists
 } = require('../models/articles');
 
 exports.getArticleById = (req, res, next) => {
@@ -52,5 +54,13 @@ exports.postArticle = (req, res, next) => {
     const data = req.body;
     return insertArticle(data)
     .then(article => res.status(201).send({article}))
+    .catch(next);
+}
+
+exports.delArticleById = (req, res, next) => {
+    const {article_id} = req.params;
+    return checkArticleIdExists(article_id)
+    .then(() => removeArticleById(article_id))
+    .then(() => res.status(204).send())
     .catch(next);
 }
