@@ -27,6 +27,29 @@
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "adds a new article for a specified user on a specified topic, image url is optional.",
+    "data_format": {
+      "author": "Legolad",
+      "title": "Seafood substitutions are increasing",
+      "body": "Some article text",
+      "topic": "cooking",
+      "article_img_url (Optional)": "https://someurl.co.uk"
+    },
+    "exampleResponse": {
+      "article": {
+        "author": "Legolad",
+        "title": "Seafood substitutions are increasing",
+        "body": "Some article text",
+        "topic": "cooking",
+        "article_img_url": "https://someurl.co.uk",
+        "article_id": 15,
+        "votes": 0,
+        "created_at": 1527695953341,
+        "comment_count": 0
+      }
+    }
+  },
   "GET /api/articles/:articles_id": {
     "description": "serves the specific article",
     "exampleResponse": {
@@ -91,6 +114,20 @@
       ]
     }
   },
+  "PATCH /api/comments/comment_id": {
+    "description": "updates the votes of a specified comment by the amount given, which must be an integer",
+    "data_format": {"inc_votes": 10},
+    "exampleResponse": {
+      "comment":{
+        "comment_id": 4,
+        "body": "Some comment",
+        "article_id": 7,
+        "author": "Legolad",
+        "votes": 15,
+        "created_at": 1527695953341
+        }
+    }
+  },
   "DELETE /api/comments/comment_id": {
     "description": "removes the specified comment",
     "exampleResponse": {}
@@ -101,11 +138,22 @@
     "exampleResponse": {
       "users": [
       {
-      "usernam": "Legolad",
+      "username": "Legolad",
       "name": "Legolas",
       "avatr_url": "https://someurl.com"
       }
     ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "serves specified user",
+    "queries": [],
+    "exampleResponse": {
+      "users":{
+      "username": "Legolad",
+      "name": "Legolas",
+      "avatr_url": "https://someurl.com"
+      }
     }
   }
 }
