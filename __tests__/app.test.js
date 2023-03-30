@@ -893,3 +893,28 @@ describe('POST /api/topics', () => {
         .then(({body}) => expect(body.msg).toBe('Invalid Format'));
     });
 });
+
+describe('DELETE /api/articles/:article_id', () => {
+    it('204: deletes the specified article and returns no content.', () => {
+        return request(app)
+        .delete('/api/articles/1')
+        .expect(204)
+        .then(({body}) => {
+            expect(body).toEqual({});
+            return db.query('SELECT * FROM articles WHERE article_id = 1');
+        })
+        .then(({rows}) => expect(rows).toEqual([]));
+    });
+    it('400: returns a bad request if ID is not a number.', () => {
+        return request(app)
+        .delete('/api/articles/not_an_id')
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid ID'));
+    });
+    it('404: returns a not found if article does not exist.', () => {
+        return request(app)
+        .delete('/api/articles/999999999')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('ID Not Found'))
+    });
+});

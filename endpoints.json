@@ -96,8 +96,12 @@
         }
     }
   },
+  "DELETE /api/articles/:articles_id": {
+    "description": "removes the specified article and its comments",
+    "exampleResponse": {}
+  },
   "GET /api/articles/:articles_id/comments": {
-    "description": "returns an array of comments of the specified article",
+    "description": "serves an array of comments of the specified article",
     "queries": {
       "limit": "some Integer or 'all', default 10",
       "p": "some integer e.g. 1, ignored if limit is 'all'"
