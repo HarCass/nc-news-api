@@ -26,7 +26,8 @@ exports.getArticles = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params;
-    return selectCommentsByArticleId(article_id)
+    const {limit, p} = req.query;
+    return selectCommentsByArticleId(article_id, limit, p)
     .then(comments => res.status(200).send({comments}))
     .catch(next);
 }

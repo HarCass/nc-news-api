@@ -768,3 +768,87 @@ describe('GET /api/articles Pagination', () => {
         });
     });
 });
+
+describe('GET /api/articles/:article_id/comments Pagination', () => {
+    describe('Limit Query', () => {
+        it('200: returns an array of comments limted to 10 by defualt.', () => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then(({body}) => {
+                const {comments} = body;
+                expect(comments).toHaveLength(10);
+                comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: 1
+                    });
+                });
+            });
+        });
+        it('200: returns an array of comments limited to the specified amount.', () => {
+            return request(app)
+            .get('/api/articles/1/comments?limit=5')
+            .expect(200)
+            .then(({body}) => {
+                const {comments} = body;
+                expect(comments).toHaveLength(5);
+                comments.forEach(comment => {
+                    expect(comment).toMatchObject({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        article_id: 1
+                    });
+                });
+            });
+        });
+        it('400: should return a bad request if the limit is not a number or "all".', () => {
+            return request(app)
+            .get('/api/articles/1/comments?limit=not_a_limit')
+            .expect(400)
+            .then(({body}) => expect(body.msg).toBe('Invalid Limit'));
+        });
+    });
+    describe('Page Query', () => {
+        it('200: returns normal result if p = 1.', () => {
+            return request(app)
+            .get('/api/articles/1/comments?p=1')
+            .expect(200)
+            .then(({body}) => {
+                const {comments} = body;
+                expect(comments).toHaveLength(10);
+            });
+        });
+        it('200: returns correct result if p > 1.', () => {
+            return request(app)
+            .get('/api/articles/1/comments?p=2')
+            .expect(200)
+            .then(({body}) => {
+                const {comments} = body;
+                expect(comments).toHaveLength(1);
+            });
+        });
+        it('200: returns an empty array if p is out of range.', () => {
+            return request(app)
+            .get('/api/articles/1/comments?p=99')
+            .expect(200)
+            .then(({body}) => {
+                const {comments} = body;
+                expect(comments).toHaveLength(0);
+            });
+        });
+        it('400: returns a bad request if p is not a number.', () => {
+            return request(app)
+            .get('/api/articles/1/comments?p=not_a_number')
+            .expect(400)
+            .then(({body}) => expect(body.msg).toBe('Invalid Page'));
+        });
+    });
+});
