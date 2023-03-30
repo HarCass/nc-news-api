@@ -52,8 +52,16 @@ exports.selectArticles = (topic, sort = 'created_at', order = 'desc', limit = 10
     .then(([{rows}, {rowCount}]) => [rows, rowCount]);
 }
 
-exports.selectCommentsByArticleId = (id) => {
-    return db.query('SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at ASC', [id])
+exports.selectCommentsByArticleId = (id, limit = 10, p = 1) => {
+    if (isNaN(limit) && limit !== 'all') return Promise.reject({status: 400, msg: 'Invalid Limit'});
+    
+    if(isNaN(p)) return Promise.reject({status: 400, msg: 'Invalid Page'});
+
+    let sql = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at ASC LIMIT ${limit}`;
+
+    if (limit !== 'all') sql += ` OFFSET ${limit * (p-1)}`;
+
+    return db.query(sql, [id])
     .then(({rows}) => {
         if(rows.length) return rows;
         else return Promise.all([db.query('SELECT * FROM articles WHERE article_id = $1', [id]), rows])
