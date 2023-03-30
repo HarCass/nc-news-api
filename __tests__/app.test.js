@@ -539,3 +539,100 @@ describe('PATCH /api/comments/:comment_id', () => {
         .then(({body}) => expect(body.msg).toBe('Invalid Format'));
     });
 });
+
+describe('POST /api/articles', () => {
+    it('201: adds the article to the database and returns the new article.', () => {
+        const item = {
+            author: 'rogersop',
+            title: '<3 Cats',
+            body: 'Cats are cool.',
+            topic: 'cats',
+            article_img_url: 'https://someurl.net'
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(item)
+        .expect(201)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article).toMatchObject({
+                article_id: expect.any(Number),
+                author: 'rogersop',
+                title: '<3 Cats',
+                body: 'Cats are cool.',
+                topic: 'cats',
+                article_img_url: 'https://someurl.net',
+                votes: 0,
+                created_at: expect.any(String),
+                comment_count: 0
+            });
+        });
+    });
+    it('201: adds the article to the database and returns the new article even if image url is missing.', () => {
+        const item = {
+            author: 'rogersop',
+            title: '<3 Cats',
+            body: 'Cats are cool.',
+            topic: 'cats'
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(item)
+        .expect(201)
+        .then(({body}) => {
+            const {article} = body;
+            expect(article).toMatchObject({
+                article_id: expect.any(Number),
+                author: 'rogersop',
+                title: '<3 Cats',
+                body: 'Cats are cool.',
+                topic: 'cats',
+                article_img_url: expect.any(String),
+                votes: 0,
+                created_at: expect.any(String),
+                comment_count: 0
+            });
+        });
+    });
+    it('400: returns a bad request if the request body is missing properties.', () => {
+        const item = {
+            author: 'rogersop',
+            body: 'Cats are cool.',
+            topic: 'cats',
+            article_img_url: 'https://someurl.net'
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+    it('404: returns a bad request if the request body has an author username that does not exist.', () => {
+        const item = {
+            author: 'not_a_user',
+            title: '<3 cats',
+            body: 'Cats are cool.',
+            topic: 'cats',
+            article_img_url: 'https://someurl.net'
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(item)
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Username Not Found'));
+    });
+    it('404: returns a bad request if the request body has a topic that does not exist.', () => {
+        const item = {
+            author: 'rogersop',
+            title: '<3 cats',
+            body: 'Cats are cool.',
+            topic: 'not_a_topic',
+            article_img_url: 'https://someurl.net'
+        };
+        return request(app)
+        .post('/api/articles')
+        .send(item)
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Topic Not Found'));
+    });
+});
