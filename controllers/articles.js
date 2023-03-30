@@ -29,9 +29,8 @@ exports.getArticles = (req, res, next) => {
 exports.getCommentsByArticleId = (req, res, next) => {
     const {article_id} = req.params;
     const {limit, p} = req.query;
-    return checkArticleIdExists(article_id)
-    .then(() => selectCommentsByArticleId(article_id, limit, p))
-    .then(comments => res.status(200).send({comments}))
+    return Promise.all([selectCommentsByArticleId(article_id, limit, p), checkArticleIdExists(article_id)])
+    .then(([comments]) => res.status(200).send({comments}))
     .catch(next);
 }
 
