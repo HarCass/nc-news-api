@@ -62,14 +62,7 @@ exports.selectCommentsByArticleId = (id, limit = 10, p = 1) => {
     if (limit !== 'all') sql += ` OFFSET ${limit * (p-1)}`;
 
     return db.query(sql, [id])
-    .then(({rows}) => {
-        if(rows.length) return rows;
-        else return Promise.all([db.query('SELECT * FROM articles WHERE article_id = $1', [id]), rows])
-        .then(([{rows}, comments]) => {
-            if (rows.length) return comments
-            else return Promise.reject({status: 404, msg: 'Comments Not Found'})
-        });
-    });
+    .then(({rows}) => rows);
 }
 
 exports.insertCommentsByArticleId = (id, data) => {

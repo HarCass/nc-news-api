@@ -247,13 +247,13 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(msg).toBe('Invalid ID');
         });
     });
-    it('404: returns a not found if there are no comments for given ID and ID does not exist.', () => {
+    it('404: returns a not found if ID does not exist.', () => {
         return request(app)
         .get('/api/articles/9999999/comments')
         .expect(404)
         .then(({body}) => {
             const {msg} = body;
-            expect(msg).toBe('Comments Not Found');
+            expect(msg).toBe('ID Not Found');
         });
     });
     it('200: returns an empty array if the ID exists and there are no comments.', () => {
