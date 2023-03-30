@@ -103,7 +103,7 @@ exports.insertArticle = (data) => {
     }
 
     sql += `
-    SELECT DISTINCT new_article.*, CAST(COUNT(comments) AS INT) AS comment_count
+    SELECT new_article.*, CAST(COUNT(comments) AS INT) AS comment_count
     FROM new_article
     LEFT JOIN comments ON comments.article_id = new_article.article_id
     GROUP BY new_article.article_id, new_article.author, new_article.title, new_article.body, new_article.topic, new_article.article_img_url, new_article.votes, new_article.created_at
