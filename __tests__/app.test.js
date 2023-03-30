@@ -80,7 +80,7 @@ describe('GET /api/articles/:article_id', () => {
 describe('GET /api/articles', () => {
     it('200: returns an array of all the articles, the articles should be sorted by date in descending order.', () => {
         return request(app)
-        .get('/api/articles')
+        .get('/api/articles?limit=all')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
@@ -102,7 +102,7 @@ describe('GET /api/articles', () => {
     });
     it('200: returns an array of all the articles of the specified topic if that topic exists, the articles should be sorted by date in descending order.', () => {
         return request(app)
-        .get('/api/articles?topic=mitch')
+        .get('/api/articles?topic=mitch&limit=all')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
@@ -139,7 +139,7 @@ describe('GET /api/articles', () => {
     });
     it('200: returns an array of all the articles, the articles should be sorted by the specified column in descending order.', () => {
         return request(app)
-        .get('/api/articles?sort_by=author')
+        .get('/api/articles?sort_by=author&limit=all')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
@@ -167,7 +167,7 @@ describe('GET /api/articles', () => {
     });
     it('200: returns an array of all the articles, the articles should be ordered in asc or desc when specified.', () => {
         return request(app)
-        .get('/api/articles?order=asc')
+        .get('/api/articles?order=asc&limit=all')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
@@ -195,7 +195,7 @@ describe('GET /api/articles', () => {
     });
     it('200: returns a correct array of articles, with a combination of queries.', () => {
         return request(app)
-        .get('/api/articles?topic=mitch&sort_by=author&order=asc')
+        .get('/api/articles?topic=mitch&sort_by=author&order=asc&limit=all')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
@@ -634,5 +634,137 @@ describe('POST /api/articles', () => {
         .send(item)
         .expect(404)
         .then(({body}) => expect(body.msg).toBe('Topic Not Found'));
+    });
+});
+
+describe('GET /api/articles Pagination', () => {
+    describe('Limit Query', () => {
+        it('200: returns an array of articles limited to 10 by defualt.', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({body}) => {
+                const {articles} = body;
+                expect(articles).toHaveLength(10);
+                articles.forEach(article => {
+                    expect(article).toMatchObject({
+                        author: expect.any(String),
+                        title: expect.any(String),
+                        article_id: expect.any(Number),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number),
+                    });
+                });
+            });
+        });
+        it('200: returns an array of articles limited to the specified amount.', () => {
+            return request(app)
+            .get('/api/articles?limit=5')
+            .expect(200)
+            .then(({body}) => {
+                const {articles} = body;
+                expect(articles).toHaveLength(5);
+                articles.forEach(article => {
+                    expect(article).toMatchObject({
+                        author: expect.any(String),
+                        title: expect.any(String),
+                        article_id: expect.any(Number),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    });
+                });
+            });
+        });
+        it('400: should return a bad request if the limit is not a number or "all".', () => {
+            return request(app)
+            .get('/api/articles?limit=not_a_limit')
+            .expect(400)
+            .then(({body}) => expect(body.msg).toBe('Invalid Limit'));
+        });
+    });
+    describe('Page Query', () => {
+        it('200: returns normal result if p = 1.', () => {
+            return request(app)
+            .get('/api/articles?p=1')
+            .expect(200)
+            .then(({body}) => {
+                const {articles} = body;
+                expect(articles).toHaveLength(10);
+                articles.forEach(article => {
+                    expect(article).toMatchObject({
+                        author: expect.any(String),
+                        title: expect.any(String),
+                        article_id: expect.any(Number),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    });
+                });
+            });
+        });
+        it('200: returns correct result if p > 1.', () => {
+            return request(app)
+            .get('/api/articles?p=2')
+            .expect(200)
+            .then(({body}) => {
+                const {articles} = body;
+                expect(articles).toHaveLength(2);
+                articles.forEach(article => {
+                    expect(article).toMatchObject({
+                        author: expect.any(String),
+                        title: expect.any(String),
+                        article_id: expect.any(Number),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        article_img_url: expect.any(String),
+                        comment_count: expect.any(Number)
+                    });
+                });
+            });
+        });
+        it('200: returns an empty array if page out of range.', () => {
+            return request(app)
+            .get('/api/articles?p=3')
+            .expect(200)
+            .then(({body}) => {
+                const {articles} = body;
+                expect(articles).toHaveLength(0);
+            });
+        });
+        it('400: returns a bad request if p is not a number.', () => {
+            return request(app)
+            .get('/api/articles?p=not_a_number')
+            .expect(400)
+            .then(({body}) => expect(body.msg).toBe('Invalid Page'));
+        });
+    });
+    describe('total_count Property', () => {
+        it('200: returns an array of articles and a total_count in the response body.', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then(({body}) => {
+                const {total_count} = body;
+                expect(total_count).toBe(12);
+            });
+        });
+        it('200: returns an array of articles and a  correct total_count if given a valid topic.', () => {
+            return request(app)
+            .get('/api/articles?topic=mitch')
+            .expect(200)
+            .then(({body}) => {
+                const {total_count} = body;
+                expect(total_count).toBe(11);
+            });
+        });
     });
 });
