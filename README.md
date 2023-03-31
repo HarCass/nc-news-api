@@ -37,7 +37,7 @@ Once you have setup the `.env` files you can run the following command in your t
 This will seed the development database, you can then view it via Postgres in your terminal or run 
 >`node listen.js`
 
-this will start the application so you can interact with the databse via the API (You can make requests to it with an application such as insomnia, the application runs on PORT 8080 by default).
+this will start the application so you can interact with the databse via the API (You can make requests to it with an application such as insomnia, the application runs on PORT 9090 by default).
 
 If you wish to also seed the test database you can do so by running the following in your terminal
 >`npm test app`

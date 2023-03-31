@@ -1,6 +1,6 @@
 # Possible Errors
 
-This is a guide to the possible errors that may happen in the app.
+This is a guide to some of the possible errors that may happen in the app.
 
 ---
 
