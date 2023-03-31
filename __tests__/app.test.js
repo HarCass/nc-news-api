@@ -949,3 +949,40 @@ describe('GET /api/comments/:comment_id', () => {
         .then(({body}) => expect(body.msg).toBe('ID Not Found'));
     });
 });
+
+describe('GET /api/users/:username/comments', () => {
+    it('200: returns an array of all comments made by the specified user.', () => {
+        return request(app)
+        .get('/api/users/butter_bridge/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments).toHaveLength(5)
+            comments.forEach(comment => {
+                expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    article_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: expect.any(String),
+                });
+            });
+        });
+    });
+    it('200: returns an empty array if the specified user has not made any comments.', () => {
+        return request(app)
+        .get('/api/users/rogersop/comments')
+        .expect(200)
+        .then(({body}) => {
+            const {comments} = body;
+            expect(comments).toEqual([]);
+        });
+    });
+    it('404: returns a not found if the username does not exist.', () => {
+        return request(app)
+        .get('/api/users/not_a_user/comments')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Username Not Found'));
+    });
+});
