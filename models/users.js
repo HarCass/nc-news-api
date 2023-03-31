@@ -36,3 +36,7 @@ exports.insertUser = (data) => {
     return db.query(sql, [data.username, data.name, data.avatar_url])
     .then(({rows}) => rows[0]);
 }
+
+exports.removeUser = (username) => {
+    return db.query('DELETE FROM users WHERE username = $1', [username]);
+}
