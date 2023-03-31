@@ -39,3 +39,17 @@ jobs:
 
       - name: Run Tests
         run: PGDATABASE=test_db PGUSER=test_user PGPASSWORD=test_pw npm t app
+
+  staging-test:
+    name: Staging Test
+    runs-on: ubuntu-latest
+    needs: test-app
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: NODE_ENV=production DATABASE_URL=${{DB_URL}} npm t app
