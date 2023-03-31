@@ -8,7 +8,7 @@ This is an API designed to query an SQL database, containing information about n
 ## Setup Instructions
 - - -
 ### Cloning the Repo
-To clone this repo you must have git installed on your system. Then navigate to the desired location you wish for the repo to be contained in and run the following command in your terminal
+To clone this repo you must have git installed on your system. Then navigate to the desired location you want the repo to be contained in and run the following command in your terminal
 > `git clone https://github.com/HarCass/nc-news-api`
 
 You may be prompted for your github details.
@@ -45,3 +45,5 @@ If you wish to also seed the test database you can do so by running the followin
 This will run some tests for the application to make sure it is working correctly and simultaneously seed the test databse.
 ### Making a Request to the API
 Make a GET request to the endpoint `/api` to get a list of available endpoints.
+### Errors
+See `error-handling.md`.

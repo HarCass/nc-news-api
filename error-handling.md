@@ -1,11 +1,6 @@
 # Possible Errors
 
-This is an _**incomplete**_ guide to the possible errors that may happen in your app. We have left some of them blank to prompt you to think about the errors that could occur as a client uses each endpoint that you have created.
-
-Think about what could go wrong for each route, and the HTTP status code should be sent to the client in each case.
-For each thing that could go wrong, make a test with your expected status code and then make sure that possibility is handled.
-
-Bear in mind, handling bad inputs from clients doesn't necessarily have to lead to a 4\*\* status code. Handling can include using default behaviours or even ignoring parts of the request.
+This is a guide to the possible errors that may happen in the app.
 
 ---
 
@@ -23,10 +18,6 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 
 ---
 
-## The Express Documentation
-
-[The Express Docs](https://expressjs.com/en/guide/error-handling.html) have a great section all about handling errors in Express.
-
 ## Unavailable Routes
 
 ### GET `/not-a-route`
@@ -39,53 +30,53 @@ Bear in mind, handling bad inputs from clients doesn't necessarily have to lead 
 
 ### GET `/api/topics`
 
-- status: 404 (If mistyped endpoint, see unavailable routes.)
-- status: 500 (If database issues e.g. the databse does not exist.)
 
 ### GET `/api/users/:username`
 
--
+- 404: Provided `username` that doesn't exist in the database
 
 ### GET `/api/articles/:article_id`
 
-- Bad `article_id` (e.g. `/dog`)
-- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- 400: Bad `article_id` (e.g. `/dog`)
+- 404: Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
 
 ### PATCH `/api/articles/:article_id`
 
-- No `inc_votes` on request body
-- Invalid `inc_votes` (e.g. `{ inc_votes : "cat" }`)
+- 404: Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- 400: No `inc_votes` on request body
+- 400: Invalid `inc_votes` (e.g. `{ inc_votes : "cat" }`)
 
 ### POST `/api/articles/:article_id/comments`
 
-- Bad `article_id` (e.g. `/dog`)
-- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
-- `username` that does not exist
-- Data to post in bad format (e.g {bad: 'format'})
-- Missing properties on request body (e.g. `{username: 'something'}`)
+- 400: Bad `article_id` (e.g. `/dog`)
+- 404: Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- 404: `username` that does not exist
+- 400: Data to post in bad format (e.g {bad: 'format'})
+- 400: Missing properties on request body (e.g. `{username: 'something'}`)
 
 ### GET `/api/articles/:article_id/comments`
 
-- Bad `article_id` (e.g. `/dog`)
-- Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
+- 400: Bad `article_id` (e.g. `/dog`)
+- 404: Well formed `article_id` that doesn't exist in the database (e.g. `/999999`)
 
 ### GET `/api/articles`
 
-- Bad queries:
+- 400: Bad queries:
   - `sort_by` a column that doesn't exist
   - `order` !== "asc" / "desc"
   - `topic` that is not in the database
-  - `topic` that exists but does not have any articles associated with it
+  - `limit` not = an integer or 'all'
+  - `p` not = an integer
 
 ### PATCH `/api/comments/:comment_id`
 
--
+- 404: Well formed `comment_id` that doesn't exist in the database (e.g. `/999999`)
+- 400: No `inc_votes` on request body
+- 400: Invalid `inc_votes` (e.g. `{ inc_votes : "cat" }`)
 
 ### DELETE `/api/comments/:comment_id`
 
-- `comment_id` that is not in database
+- 404: `comment_id` that is not in database
 
 ### GET `/api`
 
-- status: 404 (If mistyped endpoint, see unavailable routes.)
-- status: 500 (If database issues e.g. the databse does not exist.)
