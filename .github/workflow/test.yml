@@ -7,14 +7,14 @@ on:
 
 jobs:
   test-utils:
+    name: Utils Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repo
-      - uses: actions/checkout@v3
-      
-      - name: Install Dependencies
-      - run: npm ci
+        uses: actions/checkout@v3
 
-      - name: Utils Test
-      - run: npm t utils
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm t utils
