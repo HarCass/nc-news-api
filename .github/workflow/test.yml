@@ -2,16 +2,16 @@ on:
   pull_request:
     branches:
       - main
-      jobs:
-        test-utils:
-          name: Test Utils
-          runs-on: ubuntu-latest
-          steps:
-            - name: Checkout Repo
-              uses: actions/checkout@v3
-            
-            - name: Install Dependencies
-              run: npm ci
+    jobs:
+      test-utils:
+        name: Test Utils
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout Repo
+            uses: actions/checkout@v3
+          
+          - name: Install Dependencies
+            run: npm ci
 
-            - name: Utils Test
-              run: npm t utils
+          - name: Utils Test
+            run: npm t utils
