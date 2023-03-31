@@ -1,0 +1,55 @@
+name: Application Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-utils:
+    name: Utils Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm t utils
+
+  test-app:
+    name: App Test
+    runs-on: ubuntu-latest
+    needs: test-utils
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: PSQL Setup
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: test_db
+          postgresql user: test_user
+          postgresql password: test_pw
+
+      - name: Run Tests
+        run: PGDATABASE=test_db PGUSER=test_user PGPASSWORD=test_pw npm t app
+
+  staging-test:
+    name: Staging Test
+    runs-on: ubuntu-latest
+    needs: test-app
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: NODE_ENV=production DATABASE_URL=${{ secrets.DB_URL }} npm t app
