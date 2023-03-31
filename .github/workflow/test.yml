@@ -1,10 +1,11 @@
+name: Application Tests
 on:
   pull_request:
     branches:
       - main
     jobs:
       test-utils:
-        name: Test Utils
+        name: Utils Test
         runs-on: ubuntu-latest
         steps:
           - name: Checkout Repo
