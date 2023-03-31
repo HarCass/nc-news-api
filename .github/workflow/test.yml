@@ -7,8 +7,8 @@ on:
 
 jobs:
   test-utils:
-    name: Utils Test
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
