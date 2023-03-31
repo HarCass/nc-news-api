@@ -918,3 +918,34 @@ describe('DELETE /api/articles/:article_id', () => {
         .then(({body}) => expect(body.msg).toBe('ID Not Found'))
     });
 });
+
+describe('GET /api/comments/:comment_id', () => {
+    it('200: returns a comment of the specified ID.', () => {
+        return request(app)
+        .get('/api/comments/3')
+        .expect(200)
+        .then(({body}) => {
+            const {comment} = body;
+            expect(comment).toMatchObject({
+                comment_id: 3,
+                author: expect.any(String),
+                body: expect.any(String),
+                article_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+            });
+        });
+    });
+    it('400: returns a bad request if the ID is invalid.', () => {
+        return request(app)
+        .get('/api/comments/not_an_id')
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid ID'));
+    });
+    it('404: returns a not found if the ID does not exist.', () => {
+        return request(app)
+        .get('/api/comments/9999999')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('ID Not Found'));
+    });
+});
