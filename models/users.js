@@ -24,3 +24,15 @@ exports.checkUsernameExists = (username) => {
         if(!rows.length) return Promise.reject({status:404, msg: 'Username Not Found'});
     });
 }
+
+exports.insertUser = (data) => {
+    const sql = `
+    INSERT INTO users
+    (username, name, avatar_url)
+    VALUES
+    ($1, $2, $3)
+    RETURNING *
+    `;
+    return db.query(sql, [data.username, data.name, data.avatar_url])
+    .then(({rows}) => rows[0]);
+}

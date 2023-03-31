@@ -986,3 +986,35 @@ describe('GET /api/users/:username/comments', () => {
         .then(({body}) => expect(body.msg).toBe('Username Not Found'));
     });
 });
+
+describe('POST /api/users', () => {
+    it('201: adds user and returns added user.', () => {
+        const item = {username: 'HC62', name:'Harry', avatar_url: 'some_url'};
+        return request(app)
+        .post('/api/users')
+        .send(item)
+        .expect(201)
+        .then(({body}) => {
+            const {user} = body;
+            expect(user).toMatchObject({username: 'HC62', name:'Harry', avatar_url: 'some_url'});
+            return db.query('SELECT * FROM users WHERE username = $1', [user.username]);
+        })
+        .then(({rows}) => expect(rows[0]).not.toBe(undefined));
+    });
+    it('400: returns a bad request if request body is missing name or username.', () => {
+        const item = {name:'Harry', avatar_url: 'some_url'};
+        return request(app)
+        .post('/api/users')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+    it('400: returns a bad request if the username already exists.', () => {
+        const item = {username: 'rogersop', name:'Roger', avatar_url: 'some_url'};
+        return request(app)
+        .post('/api/users')
+        .send(item)
+        .expect(400)
+        .then(({body}) => expect(body.msg).toBe('Invalid Format'));
+    });
+});
