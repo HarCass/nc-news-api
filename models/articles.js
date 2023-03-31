@@ -8,7 +8,7 @@ exports.selectArticleById = (id) => {
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
     HAVING articles.article_id = $1
-    `
+    `;
     return db.query(sql, [id])
     .then(({rows}) => {
         if(rows.length) return rows[0];
@@ -31,7 +31,7 @@ exports.selectArticles = (topic, sort = 'created_at', order = 'desc', limit = 10
     FROM articles
     LEFT JOIN comments ON comments.article_id = articles.article_id
     GROUP BY articles.article_id
-    `
+    `;
     if(topic) {
         articleSql += `\nHAVING topic = $1`;
         queryParams.push(topic);
@@ -100,21 +100,21 @@ exports.insertArticle = (data) => {
     WITH new_article
     AS
     (INSERT INTO articles
-    (author, title, body, topic`
+    (author, title, body, topic`;
     
     if(data.article_img_url) {
         sql += `, article_img_url)
         VALUES
         ($1, $2, $3, $4, $5)
         RETURNING *)
-        `
+        `;
         valuesArr.push(data.article_img_url);
     } else {
         sql += `)
         VALUES
         ($1, $2, $3, $4)
         RETURNING *)
-        `
+        `;
     }
 
     sql += `
@@ -122,7 +122,7 @@ exports.insertArticle = (data) => {
     FROM new_article
     LEFT JOIN comments ON comments.article_id = new_article.article_id
     GROUP BY new_article.article_id, new_article.author, new_article.title, new_article.body, new_article.topic, new_article.article_img_url, new_article.votes, new_article.created_at
-    `
+    `;
     return db.query(sql, valuesArr)
     .then(({rows}) => rows[0]);
 }

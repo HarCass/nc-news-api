@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get('/api', getEndpoints)
+app.get('/api', getEndpoints);
 
 app.use('/api/topics', topicsRouter);
 
