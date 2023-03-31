@@ -1018,3 +1018,22 @@ describe('POST /api/users', () => {
         .then(({body}) => expect(body.msg).toBe('Invalid Format'));
     });
 });
+
+describe('DELETE /api/users/:username', () => {
+    it('204: removes the user and returns a no content.', () => {
+        return request(app)
+        .delete('/api/users/lurker')
+        .expect(204)
+        .then(({body}) => {
+            expect(body).toEqual({});
+            return db.query("SELECT * FROM users WHERE username = 'lurker'");
+        })
+        .then(({rows}) => expect(rows).toEqual([]));
+    });
+    it('404: returns not found if username does not exist.', () => {
+        return request(app)
+        .delete('/api/users/not_a_user')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Username Not Found'));
+    });
+});
