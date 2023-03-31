@@ -136,6 +136,19 @@
       ]
     }
   },
+  "GET /api/comments/comment_id": {
+    "description": "serves the specific comment",
+    "exampleResponse": {
+      "comment":{
+        "comment_id": 4,
+        "body": "Some comment",
+        "article_id": 7,
+        "author": "Legolad",
+        "votes": 15,
+        "created_at": 1527695953341
+        }
+    }
+  },
   "PATCH /api/comments/comment_id": {
     "description": "updates the votes of a specified comment by the amount given, which must be an integer",
     "data_format": {"inc_votes": 10},
@@ -189,6 +202,25 @@
       "name": "Legolas",
       "avatr_url": "https://someurl.com"
       }
+    }
+  },
+  "DELETE /api/users/:username": {
+    "description": "deletes the specified user",
+    "exampleResponse": {}
+  },
+  "GET /api/users/:username/comments": {
+    "description": "serves all comments by the specified user",
+    "exampleResponse": {
+      "comments":[
+        {
+          "comment_id": 1,
+          "votes": 50,
+          "created_at": 1527695953341,
+          "author": "Legolad",
+          "body": "ipsum morem",
+          "article_id": 3
+        }
+      ]
     }
   }
 }
