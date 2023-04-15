@@ -1,21 +1,15 @@
 const express = require('express');
-const { getEndpoints } = require('./controllers/api');
 const { psqlErrHandler, customErrHandler } = require('./controllers/errors');
-const { topicsRouter, articlesRouter, commentsRouter, usersRouter } = require('./routes/index');
+const apiRouter = require('./routes/api');
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
+
 app.use(express.json());
 
-app.get('/api', getEndpoints);
-
-app.use('/api/topics', topicsRouter);
-
-app.use('/api/articles', articlesRouter);
-
-app.use('/api/comments', commentsRouter);
-
-app.use('/api/users', usersRouter);
+app.use('/api', apiRouter);
 
 app.use(psqlErrHandler);
 
