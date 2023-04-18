@@ -57,7 +57,7 @@ exports.selectCommentsByArticleId = (id, limit = 10, p = 1) => {
     
     if(isNaN(p)) return Promise.reject({status: 400, msg: 'Invalid Page'});
 
-    let sql = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at ASC LIMIT ${limit}`;
+    let sql = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC LIMIT ${limit}`;
 
     if (limit !== 'all') sql += ` OFFSET ${limit * (p-1)}`;
 
