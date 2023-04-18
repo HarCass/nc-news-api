@@ -225,7 +225,7 @@ describe('GET /api/articles/:article_id/comments', () => {
         .then(({body}) => {
             const {comments} = body;
             expect(comments).toHaveLength(2);
-            expect(comments).toBeSortedBy('created_at');
+            expect(comments).toBeSortedBy('created_at', {descending: true});
             comments.forEach(comment => {
                 expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
