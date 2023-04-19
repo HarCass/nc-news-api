@@ -37,7 +37,7 @@ exports.selectArticles = (topic, sort = 'created_at', order = 'desc', limit = 10
         queryParams.push(topic);
     }
 
-    articleSql += `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
+    articleSql += sort === 'comment_count' ? `\nORDER BY ${sort} ${order.toUpperCase()}` : `\nORDER BY articles.${sort} ${order.toUpperCase()}`;
 
     articleSql += `\nLIMIT ${limit}`;
 
