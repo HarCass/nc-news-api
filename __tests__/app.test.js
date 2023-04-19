@@ -139,12 +139,12 @@ describe('GET /api/articles', () => {
     });
     it('200: returns an array of all the articles, the articles should be sorted by the specified column in descending order.', () => {
         return request(app)
-        .get('/api/articles?sort_by=author&limit=all')
+        .get('/api/articles?sort_by=comment_count&limit=all')
         .expect(200)
         .then(({body}) => {
             const {articles} = body;
             expect(articles).toHaveLength(12);
-            expect(articles).toBeSortedBy('author', {descending: true});
+            expect(articles).toBeSortedBy('comment_count', {descending: true});
             articles.forEach(article => {
                 expect(article).toMatchObject({
                     author: expect.any(String),
