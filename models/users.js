@@ -40,3 +40,15 @@ exports.insertUser = (data) => {
 exports.removeUser = (username) => {
     return db.query('DELETE FROM users WHERE username = $1', [username]);
 }
+
+exports.selectArticlesByUser = (username) => {
+    const sql = `
+    SELECT articles.author, title, articles.article_id, topic, articles.created_at, articles.votes, article_img_url, CAST(COUNT(comments) AS INT) AS comment_count
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    GROUP BY articles.article_id
+    HAVING articles.author = $1
+    `
+    return db.query(sql, [username])
+    .then(({rows}) => rows);
+}

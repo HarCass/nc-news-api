@@ -12,8 +12,11 @@ To clone this repo you must have git installed on your system. Then navigate to 
 > `git clone https://github.com/HarCass/nc-news-api`
 
 You may be prompted for your github details.
+
+You can then make your may into the repo by running the following command in the terminal
+> `cd nc-news-api`
 ### Installing dependencies
-Once the repo is cloned you can navigate inside of it and install the needed dependencies for the application. To do so you must have at least Node version 18.13.0 installed and run the following in the terminal
+Once the repo is cloned and you have navigated inside of it, you can install the needed dependencies for the application. To do so you must have at least Node version 18.13.0 installed and run the following command in the terminal
 >`npm install`
 ### Database setup
 Now that dependencies are installed you can setup your databases. To do so you must have at least Postgres version 12.14 installed and run the following in your terminal
@@ -31,15 +34,15 @@ The content of the files should look something like this
 - For the development file `PGDATABASE=database_name_here`
 - For the test file `PGDATABASE=database_name_here_test`
 ### Seeding the Database
-Once you have setup the `.env` files you can run the following command in your temrinal to seed your development database
+Once you have setup the `.env` files you can run the following command in your terminal to seed your development database
 >`npm run seed`
 
-This will seed the development database, you can then view it via Postgres in your terminal or run 
+This will seed the development database, you can then view it via Postgres in your terminal or run
 >`node listen.js`
 
-this will start the application so you can interact with the databse via the API (You can make requests to it with an application such as insomnia, the application runs on PORT 9090 by default).
+this will start the application so you can interact with the database via the API (You can make requests to it with an application such as insomnia, the application runs on PORT 9090 by default).
 
-If you wish to also seed the test database you can do so by running the following in your terminal
+If you wish to also seed the test database you can do so by running the following command in your terminal
 >`npm test app`
 
 This will run some tests for the application to make sure it is working correctly and simultaneously seed the test databse.

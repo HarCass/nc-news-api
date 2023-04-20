@@ -222,5 +222,22 @@
         }
       ]
     }
+  },
+  "GET /api/users/:username/articles": {
+    "description": "serves all articles by the specified user",
+    "exampleResponse": {
+      "articles": [
+        {
+          "author": "Legolad",
+          "title": "Seafood substitutions are increasing",
+          "article_id": 3,
+          "topic": "cooking",
+          "created_at": 1527695953341,
+          "votes": 5,
+          "article_img_url": "https://someurl.co.uk",
+          "comment_count": 2
+        }
+      ]
+    }
   }
 }

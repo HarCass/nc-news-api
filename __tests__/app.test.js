@@ -1037,3 +1037,42 @@ describe('DELETE /api/users/:username', () => {
         .then(({body}) => expect(body.msg).toBe('Username Not Found'));
     });
 });
+
+describe('GET /api/users/:username/articles', () => {
+    it('200: returns an array of articles posted by the specified user.', () => {
+        return request(app)
+        .get('/api/users/butter_bridge/articles')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toHaveLength(3)
+            articles.forEach(article => {
+                expect(article).toMatchObject({
+                    author: 'butter_bridge',
+                    title: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String),
+                    comment_count: expect.any(Number)
+                });
+            });
+        });
+    });
+    it('200: returns an empty array if the specified user has not made any articles.', () => {
+        return request(app)
+        .get('/api/users/lurker/articles')
+        .expect(200)
+        .then(({body}) => {
+            const {articles} = body;
+            expect(articles).toEqual([]);
+        });
+    });
+    it('404: returns not found if username does not exist.', () => {
+        return request(app)
+        .get('/api/users/not_a_user/articles')
+        .expect(404)
+        .then(({body}) => expect(body.msg).toBe('Username Not Found'));
+    });
+});
