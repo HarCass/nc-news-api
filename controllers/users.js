@@ -4,7 +4,8 @@ const {
     selectCommentsByUser,
     checkUsernameExists,
     insertUser,
-    removeUser
+    removeUser,
+    selectArticlesByUser
 } = require('../models/users');
 
 exports.getUsers = (req, res, next) => {
@@ -39,5 +40,12 @@ exports.delUser = (req, res, next) => {
     return checkUsernameExists(username)
     .then(() => removeUser(username))
     .then(() => res.status(204).send())
+    .catch(next);
+}
+
+exports.getArticlesByUser = (req, res, next) => {
+    const {username} = req.params;
+    return Promise.all([selectArticlesByUser(username), checkUsernameExists(username)])
+    .then(([articles]) => res.status(200).send({articles}))
     .catch(next);
 }
