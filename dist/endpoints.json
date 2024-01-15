@@ -1,0 +1,243 @@
+{
+    "GET /api": {
+        "description": "serves up a json representation of all the available endpoints of the api"
+    },
+    "GET /api/topics": {
+        "description": "serves an array of all topics",
+        "exampleResponse": {
+            "topics": [{ "slug": "football", "description": "Footie!" }]
+        }
+    },
+    "POST /api/topics": {
+        "description": "adds a new topic and serves the created topic",
+        "data_format": { "slug": "football", "description": "Footie!" },
+        "exampleResponse": {
+            "topic": { "slug": "football", "description": "Footie!" }
+        }
+    },
+    "GET /api/articles": {
+        "description": "serves an array of all topics",
+        "queries": {
+            "topic": "topic_name",
+            "sort_by": "asc OR desc, defualt desc",
+            "order": "property_name",
+            "limit": "some integer or 'all', default 10",
+            "p": "some integer e.g. 1, ignored if limit is 'all'"
+        },
+        "exampleResponse": {
+            "articles": [
+                {
+                    "author": "Legolad",
+                    "title": "Seafood substitutions are increasing",
+                    "article_id": 3,
+                    "topic": "cooking",
+                    "created_at": 1527695953341,
+                    "votes": 5,
+                    "article_img_url": "https://someurl.co.uk",
+                    "comment_count": 2
+                }
+            ],
+            "total_count": 1
+        }
+    },
+    "POST /api/articles": {
+        "description": "adds a new article for a specified user on a specified topic, image url is optional.",
+        "data_format": {
+            "author": "Legolad",
+            "title": "Seafood substitutions are increasing",
+            "body": "Some article text",
+            "topic": "cooking",
+            "article_img_url (Optional)": "https://someurl.co.uk"
+        },
+        "exampleResponse": {
+            "article": {
+                "author": "Legolad",
+                "title": "Seafood substitutions are increasing",
+                "body": "Some article text",
+                "topic": "cooking",
+                "article_img_url": "https://someurl.co.uk",
+                "article_id": 15,
+                "votes": 0,
+                "created_at": 1527695953341,
+                "comment_count": 0
+            }
+        }
+    },
+    "GET /api/articles/:articles_id": {
+        "description": "serves the specific article",
+        "exampleResponse": {
+            "article": {
+                "author": "Legolad",
+                "title": "Seafood substitutions are increasing",
+                "article_id": 3,
+                "body": "ipsum morem",
+                "topic": "cooking",
+                "created_at": 1527695953341,
+                "votes": 5,
+                "article_img_url": "https://someurl.co.uk",
+                "comment_count": 2
+            }
+        }
+    },
+    "PATCH /api/articles/:articles_id": {
+        "description": "updates the votes of a specified article by the amount given, which must be an integer",
+        "data_format": { "inc_votes": 10 },
+        "exampleResponse": {
+            "article": {
+                "author": "Legolad",
+                "title": "Seafood substitutions are increasing",
+                "article_id": 3,
+                "body": "ipsum morem",
+                "topic": "cooking",
+                "created_at": 1527695953341,
+                "votes": 15,
+                "article_img_url": "https://someurl.co.uk",
+                "comment_count": 2
+            }
+        }
+    },
+    "DELETE /api/articles/:articles_id": {
+        "description": "removes the specified article and its comments",
+        "exampleResponse": {}
+    },
+    "GET /api/articles/:articles_id/comments": {
+        "description": "serves an array of comments of the specified article",
+        "queries": {
+            "limit": "some Integer or 'all', default 10",
+            "p": "some integer e.g. 1, ignored if limit is 'all'"
+        },
+        "exampleResponse": {
+            "comments": [
+                {
+                    "comment_id": 1,
+                    "votes": 50,
+                    "created_at": 1527695953341,
+                    "author": "Legolad",
+                    "body": "ipsum morem",
+                    "article_id": 3
+                }
+            ],
+            "total_count": 1
+        }
+    },
+    "POST /api/articles/:articles_id/comments": {
+        "description": "adds a comment from a user for a specified article",
+        "data_format": { "username": "Legolad", "body": "ipsum morem" },
+        "exampleResponse": {
+            "comment": [
+                {
+                    "comment_id": 10,
+                    "votes": 0,
+                    "created_at": 1527695953999,
+                    "author": "Legolad",
+                    "body": "ipsum morem",
+                    "article_id": 3
+                }
+            ]
+        }
+    },
+    "GET /api/comments/comment_id": {
+        "description": "serves the specific comment",
+        "exampleResponse": {
+            "comment": {
+                "comment_id": 4,
+                "body": "Some comment",
+                "article_id": 7,
+                "author": "Legolad",
+                "votes": 15,
+                "created_at": 1527695953341
+            }
+        }
+    },
+    "PATCH /api/comments/comment_id": {
+        "description": "updates the votes of a specified comment by the amount given, which must be an integer",
+        "data_format": { "inc_votes": 10 },
+        "exampleResponse": {
+            "comment": {
+                "comment_id": 4,
+                "body": "Some comment",
+                "article_id": 7,
+                "author": "Legolad",
+                "votes": 15,
+                "created_at": 1527695953341
+            }
+        }
+    },
+    "DELETE /api/comments/comment_id": {
+        "description": "removes the specified comment",
+        "exampleResponse": {}
+    },
+    "GET /api/users": {
+        "description": "serves an array of all users",
+        "exampleResponse": {
+            "users": [
+                {
+                    "username": "Legolad",
+                    "name": "Legolas",
+                    "avatr_url": "https://someurl.com"
+                }
+            ]
+        }
+    },
+    "POST /api/users": {
+        "description": "adds a new user",
+        "data_format": {
+            "username": "Legolad",
+            "name": "Legolas",
+            "avatr_url (Optional)": "https://someurl.com"
+        },
+        "exampleResponse": {
+            "user": {
+                "username": "Legolad",
+                "name": "Legolas",
+                "avatr_url": "https://someurl.com"
+            }
+        }
+    },
+    "GET /api/users/:username": {
+        "description": "serves specified user",
+        "exampleResponse": {
+            "users": {
+                "username": "Legolad",
+                "name": "Legolas",
+                "avatr_url": "https://someurl.com"
+            }
+        }
+    },
+    "DELETE /api/users/:username": {
+        "description": "deletes the specified user",
+        "exampleResponse": {}
+    },
+    "GET /api/users/:username/comments": {
+        "description": "serves all comments by the specified user",
+        "exampleResponse": {
+            "comments": [
+                {
+                    "comment_id": 1,
+                    "votes": 50,
+                    "created_at": 1527695953341,
+                    "author": "Legolad",
+                    "body": "ipsum morem",
+                    "article_id": 3
+                }
+            ]
+        }
+    },
+    "GET /api/users/:username/articles": {
+        "description": "serves all articles by the specified user",
+        "exampleResponse": {
+            "articles": [
+                {
+                    "author": "Legolad",
+                    "title": "Seafood substitutions are increasing",
+                    "article_id": 3,
+                    "topic": "cooking",
+                    "created_at": 1527695953341,
+                    "votes": 5,
+                    "article_img_url": "https://someurl.co.uk",
+                    "comment_count": 2
+                }
+            ]
+        }
+    }
+}
