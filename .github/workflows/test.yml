@@ -12,12 +12,13 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        uses: pnpm/action-setup@v2
 
       - name: Install Dependencies
+        uses: pnpm/action-setup@v2
         run: pnpm install
 
       - name: Run Tests
+        uses: pnpm/action-setup@v2
         run: pnpm t utils
 
   test-app:
@@ -27,9 +28,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        uses: pnpm/action-setup@v2
 
       - name: Install Dependencies
+        uses: pnpm/action-setup@v2
         run: pnpm install
 
       - name: PSQL Setup
@@ -49,9 +50,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        uses: pnpm/action-setup@v2
 
       - name: Install Dependencies
+        uses: pnpm/action-setup@v2
         run: pnpm install
 
       - name: Run Tests
