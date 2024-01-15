@@ -13,11 +13,22 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Pnpm setup
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
       - name: Install Dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Run Tests
-        run: npm t utils
+        run: pnpm t utils
 
   test-app:
     name: App Test
@@ -27,8 +38,19 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Pnpm setup
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
       - name: Install Dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: PSQL Setup
         uses: harmon758/postgresql-action@v1
@@ -38,7 +60,7 @@ jobs:
           postgresql password: test_pw
 
       - name: Run Tests
-        run: PGDATABASE=test_db PGUSER=test_user PGPASSWORD=test_pw npm t app
+        run: PGDATABASE=test_db PGUSER=test_user PGPASSWORD=test_pw pnpm t app
 
   staging-test:
     name: Staging Test
@@ -48,8 +70,19 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Pnpm setup
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
       - name: Install Dependencies
-        run: npm ci
+        run: pnpm install
 
       - name: Run Tests
-        run: NODE_ENV=production DATABASE_URL=${{ secrets.DB_URL }} npm t app
+        run: NODE_ENV=production DATABASE_URL=${{ secrets.DB_URL }} pnpm t app
