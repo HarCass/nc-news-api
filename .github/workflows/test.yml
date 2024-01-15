@@ -13,12 +13,21 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
+      - name: Pnpm setup
         uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Dependencies
         run: pnpm install
 
       - name: Run Tests
-        uses: pnpm/action-setup@v2
         run: pnpm t utils
 
   test-app:
@@ -29,8 +38,18 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
+      - name: Pnpm setup
         uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Dependencies
         run: pnpm install
 
       - name: PSQL Setup
@@ -51,8 +70,18 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
+        - name: Pnpm setup
         uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Cache pnpm
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Dependencies
         run: pnpm install
 
       - name: Run Tests
