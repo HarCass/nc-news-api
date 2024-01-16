@@ -4,7 +4,8 @@
   "description": "bc-nc-news",
   "main": "./dist/listen.js",
   "scripts": {
-    "build": "tsc",
+    "lint": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "start": "node dist/listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./dist/db/seeds/run-seed.js",
