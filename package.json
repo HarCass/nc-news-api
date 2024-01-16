@@ -5,7 +5,7 @@
   "main": "./dist/listen.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/listen.js",
+    "start": "node dist/listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./dist/db/seeds/run-seed.js",
     "seed-prod": "NODE_ENV=production pnpm seed",
