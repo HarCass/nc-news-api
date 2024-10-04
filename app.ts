@@ -1,18 +1,14 @@
-import express from 'express';
-import { psqlErrHandler, customErrHandler } from './controllers/errors';
-import apiRouter from './routes/api';
-import cors from 'cors';
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import apiRouter from "./routes/api.js";
+import { customErrorHandler } from "./controllers/errors.js";
 
-const app = express();
+const app = Fastify();
 
-app.use(cors());
+app.register(cors);
 
-app.use(express.json());
+app.register(apiRouter, {prefix: '/api'});
 
-app.use('/api', apiRouter);
-
-app.use(psqlErrHandler);
-
-app.use(customErrHandler);
+app.setErrorHandler(customErrorHandler);
 
 export default app;

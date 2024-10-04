@@ -1,46 +1,49 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getArticlesByUser = exports.delUser = exports.postUser = exports.getCommentsByUser = exports.getUserById = exports.getUsers = void 0;
-const users_1 = require("../models/users");
-const getUsers = (_req, res, next) => {
-    return (0, users_1.selectUsers)()
-        .then(users => res.status(200).send({ users }))
-        .catch(next);
-};
+const users_js_1 = require("../models/users.js");
+const getUsers = (_req, rep) => __awaiter(void 0, void 0, void 0, function* () {
+    const users = yield (0, users_js_1.selectUsers)();
+    rep.send({ users });
+});
 exports.getUsers = getUsers;
-const getUserById = (req, res, next) => {
+const getUserById = (req, rep) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
-    return (0, users_1.selectUserById)(username)
-        .then(user => res.status(200).send({ user }))
-        .catch(next);
-};
+    const user = yield (0, users_js_1.selectUserById)(username);
+    rep.send({ user });
+});
 exports.getUserById = getUserById;
-const getCommentsByUser = (req, res, next) => {
+const getCommentsByUser = (req, rep) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
-    return Promise.all([(0, users_1.selectCommentsByUser)(username), (0, users_1.checkUsernameExists)(username)])
-        .then(([comments]) => res.status(200).send({ comments }))
-        .catch(next);
-};
+    const [comments] = yield Promise.all([(0, users_js_1.selectCommentsByUser)(username), (0, users_js_1.checkUsernameExists)(username)]);
+    rep.send({ comments });
+});
 exports.getCommentsByUser = getCommentsByUser;
-const postUser = (req, res, next) => {
+const postUser = (req, rep) => __awaiter(void 0, void 0, void 0, function* () {
     const data = req.body;
-    return (0, users_1.insertUser)(data)
-        .then(user => res.status(201).send({ user }))
-        .catch(next);
-};
+    const user = yield (0, users_js_1.insertUser)(data);
+    rep.status(201).send({ user });
+});
 exports.postUser = postUser;
-const delUser = (req, res, next) => {
+const delUser = (req, rep) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
-    return (0, users_1.checkUsernameExists)(username)
-        .then(() => (0, users_1.removeUser)(username))
-        .then(() => res.status(204).send())
-        .catch(next);
-};
+    yield (0, users_js_1.checkUsernameExists)(username);
+    yield (0, users_js_1.removeUser)(username);
+    rep.status(204).send();
+});
 exports.delUser = delUser;
-const getArticlesByUser = (req, res, next) => {
+const getArticlesByUser = (req, rep) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = req.params;
-    return Promise.all([(0, users_1.selectArticlesByUser)(username), (0, users_1.checkUsernameExists)(username)])
-        .then(([articles]) => res.status(200).send({ articles }))
-        .catch(next);
-};
+    const [articles] = yield Promise.all([(0, users_js_1.selectArticlesByUser)(username), (0, users_js_1.checkUsernameExists)(username)]);
+    rep.send({ articles });
+});
 exports.getArticlesByUser = getArticlesByUser;

@@ -1,58 +1,51 @@
-import { selectArticleById, selectArticles, selectCommentsByArticleId, insertCommentsByArticleId, updateArticleById, checkTopicExists, insertArticle, removeArticleById, checkArticleIdExists } from '../models/articles';
-import { RequestHandler } from 'express';
-import { ArticlesResponse, GetArticlesParams, NewArticle, NewVote, getCommentsParams } from '../types';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { selectArticleById, selectArticles, selectCommentsByArticleId, insertCommentsByArticleId, updateArticleById, checkTopicExists, insertArticle, removeArticleById, checkArticleIdExists } from '../models/articles.js';
+import { ArticlesResponse, GetArticlesParams, NewArticle, NewComment, NewVote, getCommentsParams } from '../types/index.js';
 
-export const getArticleById: RequestHandler = (req, res, next) => {
+export const getArticleById = async (req: FastifyRequest<{Params: {article_id: string}}>, rep: FastifyReply) => {
     const {article_id} = req.params;
-    return selectArticleById(article_id)
-    .then(article => res.status(200).send({article}))
-    .catch(next);
+    const article = await selectArticleById(article_id);
+    rep.send({article});
 }
 
-export const getArticles: RequestHandler = (req, res, next) => {
-    const {topic, sort_by, order, limit, p}: GetArticlesParams = req.query as GetArticlesParams;
+export const getArticles = async (req: FastifyRequest<{Querystring: GetArticlesParams}>, rep: FastifyReply) => {
+    const {topic, sort_by, order, limit, p}: GetArticlesParams = req.query;
     const promiseArr: (Promise<ArticlesResponse> | Promise<void>)[] = [selectArticles(topic, sort_by, order, limit, p)];
     if (topic) promiseArr.push(checkTopicExists(topic));
-    return Promise.all(promiseArr)
-    .then(([articlesResponse]) => res.status(200).send(articlesResponse))
-    .catch(next);
+    const [articlesResponse] = await Promise.all(promiseArr);
+    rep.send(articlesResponse);
 }
 
-export const getCommentsByArticleId: RequestHandler = (req, res, next) => {
+export const getCommentsByArticleId = async (req: FastifyRequest<{Params: {article_id: string}, Querystring: getCommentsParams}>, rep: FastifyReply) => {
     const {article_id} = req.params;
-    const {limit, p} = req.query as getCommentsParams;
-    return Promise.all([selectCommentsByArticleId(article_id, limit, p), checkArticleIdExists(article_id)])
-    .then(([comments]) => res.status(200).send({comments}))
-    .catch(next);
+    const {limit, p} = req.query;
+    const [comments] = await Promise.all([selectCommentsByArticleId(article_id, limit, p), checkArticleIdExists(article_id)]);
+    rep.status(200).send({comments});
 }
 
-export const postCommentsByArticleId: RequestHandler = (req, res, next) => {
+export const postCommentsByArticleId = async (req:FastifyRequest<{Params: {article_id: string}, Body: NewComment}>, rep: FastifyReply) => {
     const {article_id} = req.params;
     const {body} = req;
-    return insertCommentsByArticleId(article_id, body)
-    .then(comment => res.status(201).send({comment}))
-    .catch(next);
+    const comment = await insertCommentsByArticleId(article_id, body);
+    rep.status(201).send({comment});
 }
 
-export const patchArticleById: RequestHandler = (req, res, next) => {
+export const patchArticleById = async (req: FastifyRequest<{Params: {article_id: string}, Body: NewVote}>, rep: FastifyReply) => {
     const {article_id} = req.params;
-    const {inc_votes} = req.body as NewVote;
-    return updateArticleById(article_id, inc_votes)
-    .then(article =>res.status(200).send({article}))
-    .catch(next);
+    const {inc_votes} = req.body;
+    const article = await updateArticleById(article_id, inc_votes);
+    rep.send({article});
 }
 
-export const postArticle: RequestHandler = (req, res, next) => {
-    const data = req.body as NewArticle;
-    return insertArticle(data)
-    .then(article => res.status(201).send({article}))
-    .catch(next);
+export const postArticle = async (req: FastifyRequest<{Body: NewArticle}>, rep: FastifyReply) => {
+    const data = req.body;
+    const article = await insertArticle(data);
+    rep.status(201).send({article});
 }
 
-export const delArticleById: RequestHandler = (req, res, next) => {
+export const delArticleById = async (req: FastifyRequest<{Params: {article_id: string}}>, rep: FastifyReply) => {
     const {article_id} = req.params;
-    return checkArticleIdExists(article_id)
-    .then(() => removeArticleById(article_id))
-    .then(() => res.status(204).send())
-    .catch(next);
+    await checkArticleIdExists(article_id);
+    await removeArticleById(article_id);
+    rep.status(204).send();
 }

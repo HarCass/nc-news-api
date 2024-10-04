@@ -1,25 +1,22 @@
-import { RequestHandler } from 'express';
-import { removeCommentById, checkCommentIdExists, updateCommentById, selectCommentById } from '../models/comments';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { removeCommentById, checkCommentIdExists, updateCommentById, selectCommentById } from '../models/comments.js';
 
-export const delCommentById: RequestHandler = (req, res, next) => {
+export const delCommentById = async (req: FastifyRequest<{Params: {comment_id: string}}>, rep: FastifyReply) => {
     const {comment_id} = req.params;
-    return checkCommentIdExists(comment_id)
-    .then(() => removeCommentById(comment_id))
-    .then(() => res.status(204).send())
-    .catch(next);
+    await checkCommentIdExists(comment_id);
+    await removeCommentById(comment_id);
+    rep.status(204).send();
 }
 
-export const patchCommentById: RequestHandler = (req, res, next) => {
+export const patchCommentById = async (req: FastifyRequest<{Params: {comment_id: string}, Body: {inc_votes: string}}>, rep: FastifyReply) => {
     const {comment_id} = req.params;
     const {inc_votes} = req.body;
-    return updateCommentById(inc_votes, comment_id)
-    .then(comment => res.status(200).send({comment}))
-    .catch(next);
+    const comment = await updateCommentById(inc_votes, comment_id);
+    rep.send({comment});
 }
 
-export const getCommentById: RequestHandler = (req, res, next) => {
+export const getCommentById = async (req: FastifyRequest<{Params: {comment_id: string}}>, rep: FastifyReply) => {
     const {comment_id} = req.params;
-    return selectCommentById(comment_id)
-    .then(comment => res.status(200).send({comment}))
-    .catch(next);
+    const comment = await selectCommentById(comment_id);
+    rep.send({comment});
 }

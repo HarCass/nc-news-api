@@ -1,6 +1,6 @@
-import { RequestHandler } from "express";
-import { default as currentEndpoints} from "../endpoints.json"
+import { FastifyReply, FastifyRequest } from "fastify";
+import { default as currentEndpoints} from "../endpoints.json";
 
-export const getEndpoints: RequestHandler = (_req, res) => {
-    res.status(200).send({endpoints: currentEndpoints});
+export const getEndpoints = async (_req: FastifyRequest, rep: FastifyReply) => {
+    rep.send({endpoints: currentEndpoints});
 }

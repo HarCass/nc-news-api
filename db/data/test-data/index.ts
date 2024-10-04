@@ -1,7 +1,7 @@
-import articleData from './articles';
-import commentData from './comments';
-import topicData from './topics';
-import userData from './users';
+import articleData from './articles.js';
+import commentData from './comments.js';
+import topicData from './topics.js';
+import userData from './users.js';
 
 const devData = {
     articleData,

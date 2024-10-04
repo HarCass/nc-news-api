@@ -138,15 +138,7 @@ export type SeedData = {
     userData: User[]
 }
 
-export type DbRows<T> = {
-    rows: T[]
+export type CustomError = {
+    status: number,
+    msg: string
 }
-
-export type DbArticles = [
-    {
-        rows: Article[]
-    },
-    {
-        rowCount: number | null
-    }
-]

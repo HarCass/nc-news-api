@@ -1,9 +1,18 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const comments_1 = require("../controllers/comments");
-const router = (0, express_1.Router)();
-router.delete('/:comment_id', comments_1.delCommentById);
-router.patch('/:comment_id', comments_1.patchCommentById);
-router.get('/:comment_id', comments_1.getCommentById);
-exports.default = router;
+const comments_js_1 = require("../controllers/comments.js");
+const commentsRouter = (app) => __awaiter(void 0, void 0, void 0, function* () {
+    app.delete('/:comment_id', comments_js_1.delCommentById);
+    app.patch('/:comment_id', comments_js_1.patchCommentById);
+    app.get('/:comment_id', comments_js_1.getCommentById);
+});
+exports.default = commentsRouter;

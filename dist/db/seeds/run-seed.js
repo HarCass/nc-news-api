@@ -12,10 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const index_1 = __importDefault(require("../data/development-data/index"));
+const index_js_1 = __importDefault(require("../data/development-data/index.js"));
 const seed_js_1 = __importDefault(require("./seed.js"));
-const connection_1 = __importDefault(require("../connection"));
+const connection_js_1 = __importDefault(require("../connection.js"));
 const runSeed = () => __awaiter(void 0, void 0, void 0, function* () {
-    return (0, seed_js_1.default)(index_1.default).then(() => connection_1.default.end());
+    return (0, seed_js_1.default)(index_js_1.default).then(() => connection_js_1.default.end());
 });
 runSeed();

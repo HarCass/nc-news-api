@@ -1,7 +1,7 @@
 import format from 'pg-format';
-import db from '../connection';
-import { convertTimestampToDate } from './utils';
-import { SeedData } from '../../types';
+import db from '../connection.js';
+import { convertTimestampToDate } from './utils.js';
+import { SeedData } from '../../types/index.js';
 
 const seed = async ({ topicData, userData, articleData, commentData }: SeedData) => {
   return db

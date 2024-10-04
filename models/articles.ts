@@ -1,5 +1,5 @@
-import db from '../db/connection';
-import { Article, ArticlesResponse, Comment, DbArticles, DbRows, NewArticle, NewComment, Optional } from '../types';
+import db from '../db/connection.js';
+import { Article, ArticlesResponse, Comment, NewArticle, NewComment, Optional } from '../types/index.js';
 
 export const selectArticleById = async (id: string) => {
     const sql = `
@@ -9,8 +9,8 @@ export const selectArticleById = async (id: string) => {
     GROUP BY articles.article_id
     HAVING articles.article_id = $1
     `;
-    return db.query(sql, [id])
-    .then(({rows}: DbRows<Article>) => {
+    return db.query<Article>(sql, [id])
+    .then(({rows}) => {
         if(rows.length) return rows[0];
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
     });
@@ -48,8 +48,8 @@ export const selectArticles = async (topic: Optional<string>, sort = 'created_at
     let countSql = 'SELECT * FROM articles';
     if(topic) countSql += ' WHERE topic = $1';
     
-    return Promise.all([db.query(articleSql, queryParams), db.query(countSql, queryParams)])
-    .then(([{rows}, {rowCount}]: DbArticles) => ({articles: rows, total_count: rowCount!}));
+    return Promise.all([db.query<Article>(articleSql, queryParams), db.query(countSql, queryParams)])
+    .then(([{rows}, {rowCount}]) => ({articles: rows, total_count: rowCount!}));
 }
 
 export const selectCommentsByArticleId = async (id: string, limit: string = '10', p = '1') => {
@@ -61,8 +61,8 @@ export const selectCommentsByArticleId = async (id: string, limit: string = '10'
 
     if (limit !== 'all') sql += ` OFFSET ${+limit * (+p-1)}`;
 
-    return db.query(sql, [id])
-    .then(({rows}: DbRows<Comment>) => rows);
+    return db.query<Comment>(sql, [id])
+    .then(({rows}) => rows);
 }
 
 export const insertCommentsByArticleId = async (id: string, data: NewComment) => {
@@ -74,14 +74,14 @@ export const insertCommentsByArticleId = async (id: string, data: NewComment) =>
     ($1, $2, $3)
     RETURNING *
     `;
-    return db.query(sql, valuesArr)
-    .then(({rows}: DbRows<Comment>) => rows[0]);
+    return db.query<Comment>(sql, valuesArr)
+    .then(({rows}) => rows[0]);
 }
 
 export const updateArticleById = async (id: string, inc_votes: number) => {
     if(isNaN(inc_votes)) return Promise.reject({status: 400, msg: 'Invalid Format'});
-    return db.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [inc_votes, id])
-    .then(({rows}: DbRows<Article>) => {
+    return db.query<Article>('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [inc_votes, id])
+    .then(({rows}) => {
         if(rows.length) return rows[0];
         else return Promise.reject({status: 404, msg: 'ID Not Found'});
     });
@@ -123,8 +123,8 @@ export const insertArticle = async (data: NewArticle) => {
     LEFT JOIN comments ON comments.article_id = new_article.article_id
     GROUP BY new_article.article_id, new_article.author, new_article.title, new_article.body, new_article.topic, new_article.article_img_url, new_article.votes, new_article.created_at
     `;
-    return db.query(sql, valuesArr)
-    .then(({rows}: DbRows<Article>) => rows[0] as Article);
+    return db.query<Article>(sql, valuesArr)
+    .then(({rows}) => rows[0]);
 }
 
 export const removeArticleById = async (id: string) => {

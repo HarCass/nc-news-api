@@ -1,4 +1,4 @@
-import { ArticleData } from "../../../types";
+import { ArticleData } from "../../../types/index.js";
 
 const articleData: ArticleData[] = [
   {

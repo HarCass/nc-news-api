@@ -13,27 +13,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_format_1 = __importDefault(require("pg-format"));
-const connection_1 = __importDefault(require("../connection"));
-const utils_1 = require("./utils");
-const seed = ({ topicData, userData, articleData, commentData }) => __awaiter(void 0, void 0, void 0, function* () {
-    return connection_1.default
+const connection_js_1 = __importDefault(require("../connection.js"));
+const utils_js_1 = require("./utils.js");
+const seed = (_a) => __awaiter(void 0, [_a], void 0, function* ({ topicData, userData, articleData, commentData }) {
+    return connection_js_1.default
         .query(`DROP TABLE IF EXISTS comments;`)
         .then(() => {
-        return connection_1.default.query(`DROP TABLE IF EXISTS articles;`);
+        return connection_js_1.default.query(`DROP TABLE IF EXISTS articles;`);
     })
         .then(() => {
-        return connection_1.default.query(`DROP TABLE IF EXISTS users;`);
+        return connection_js_1.default.query(`DROP TABLE IF EXISTS users;`);
     })
         .then(() => {
-        return connection_1.default.query(`DROP TABLE IF EXISTS topics;`);
+        return connection_js_1.default.query(`DROP TABLE IF EXISTS topics;`);
     })
         .then(() => {
-        const topicsTablePromise = connection_1.default.query(`
+        const topicsTablePromise = connection_js_1.default.query(`
       CREATE TABLE topics (
         slug VARCHAR PRIMARY KEY,
         description VARCHAR
       );`);
-        const usersTablePromise = connection_1.default.query(`
+        const usersTablePromise = connection_js_1.default.query(`
       CREATE TABLE users (
         username VARCHAR PRIMARY KEY,
         name VARCHAR NOT NULL,
@@ -42,7 +42,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => __awaiter(vo
         return Promise.all([topicsTablePromise, usersTablePromise]);
     })
         .then(() => {
-        return connection_1.default.query(`
+        return connection_js_1.default.query(`
       CREATE TABLE articles (
         article_id SERIAL PRIMARY KEY,
         title VARCHAR NOT NULL,
@@ -55,7 +55,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => __awaiter(vo
       );`);
     })
         .then(() => {
-        return connection_1.default.query(`
+        return connection_js_1.default.query(`
       CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
         body VARCHAR NOT NULL,
@@ -67,22 +67,22 @@ const seed = ({ topicData, userData, articleData, commentData }) => __awaiter(vo
     })
         .then(() => {
         const insertTopicsQueryStr = (0, pg_format_1.default)('INSERT INTO topics (slug, description) VALUES %L;', topicData.map(({ slug, description }) => [slug, description]));
-        const topicsPromise = connection_1.default.query(insertTopicsQueryStr);
+        const topicsPromise = connection_js_1.default.query(insertTopicsQueryStr);
         const insertUsersQueryStr = (0, pg_format_1.default)('INSERT INTO users ( username, name, avatar_url) VALUES %L;', userData.map(({ username, name, avatar_url }) => [
             username,
             name,
             avatar_url,
         ]));
-        const usersPromise = connection_1.default.query(insertUsersQueryStr);
+        const usersPromise = connection_js_1.default.query(insertUsersQueryStr);
         return Promise.all([topicsPromise, usersPromise]);
     })
         .then(() => {
-        const formattedArticleData = articleData.map(article => (0, utils_1.convertTimestampToDate)(article));
+        const formattedArticleData = articleData.map(article => (0, utils_js_1.convertTimestampToDate)(article));
         const insertArticlesQueryStr = (0, pg_format_1.default)('INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING *;', formattedArticleData.map(({ title, topic, author, body, created_at, votes, article_img_url, }) => [title, topic, author, body, created_at, votes, article_img_url]));
-        return connection_1.default.query(insertArticlesQueryStr);
+        return connection_js_1.default.query(insertArticlesQueryStr);
     })
         .then(() => {
-        const formattedCommentData = commentData.map(comment => (0, utils_1.convertTimestampToDate)(comment));
+        const formattedCommentData = commentData.map(comment => (0, utils_js_1.convertTimestampToDate)(comment));
         const insertCommentsQueryStr = (0, pg_format_1.default)('INSERT INTO comments (body, author, article_id, votes, created_at) VALUES %L;', formattedCommentData.map(({ body, author, article_id, votes = 0, created_at }) => [
             body,
             author,
@@ -90,7 +90,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => __awaiter(vo
             votes,
             created_at,
         ]));
-        return connection_1.default.query(insertCommentsQueryStr);
+        return connection_js_1.default.query(insertCommentsQueryStr);
     });
 });
 exports.default = seed;

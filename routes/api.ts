@@ -1,20 +1,20 @@
-import { Router } from 'express';
-import { getEndpoints } from '../controllers/api';
-import topicsRouter from './topics';
-import articlesRouter from './articles';
-import commentsRouter from './comments';
-import usersRouter from './users';
+import { FastifyInstance } from 'fastify';
+import { getEndpoints } from '../controllers/api.js';
+import topicsRouter from './topics.js';
+import articlesRouter from './articles.js';
+import commentsRouter from './comments.js';
+import usersRouter from './users.js';
 
-const router = Router();
+const apiRouter = async (app: FastifyInstance) => {
+    app.get('/', getEndpoints);
+    
+    app.register(topicsRouter, {prefix: '/topics'});
+    
+    app.register(articlesRouter, {prefix: '/articles'});
+    
+    app.register(commentsRouter, {prefix: '/comments'});
+    
+    app.register(usersRouter, {prefix: '/users'});
+};
 
-router.get('/', getEndpoints);
-
-router.use('/topics', topicsRouter);
-
-router.use('/articles', articlesRouter);
-
-router.use('/comments', commentsRouter);
-
-router.use('/users', usersRouter);
-
-export default router;
+export default apiRouter;
