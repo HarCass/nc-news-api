@@ -31,7 +31,7 @@ const selectArticleById = (id) => __awaiter(void 0, void 0, void 0, function* ()
     });
 });
 exports.selectArticleById = selectArticleById;
-const selectArticles = (topic, sort = 'created_at', order = 'desc', limit = '10', p = '1') => __awaiter(void 0, void 0, void 0, function* () {
+const selectArticles = (topic_1, ...args_1) => __awaiter(void 0, [topic_1, ...args_1], void 0, function* (topic, sort = 'created_at', order = 'desc', limit = '10', p = '1') {
     if (!['created_at', 'author', 'article_id', 'title', 'topic', 'votes', 'article_img_url', 'comment_count'].includes(sort))
         return Promise.reject({ status: 400, msg: 'Invalid Sort' });
     if (!['asc', 'desc'].includes(order))
@@ -63,7 +63,7 @@ const selectArticles = (topic, sort = 'created_at', order = 'desc', limit = '10'
         .then(([{ rows }, { rowCount }]) => ({ articles: rows, total_count: rowCount }));
 });
 exports.selectArticles = selectArticles;
-const selectCommentsByArticleId = (id, limit = '10', p = '1') => __awaiter(void 0, void 0, void 0, function* () {
+const selectCommentsByArticleId = (id_1, ...args_1) => __awaiter(void 0, [id_1, ...args_1], void 0, function* (id, limit = '10', p = '1') {
     if (isNaN(+limit) && limit !== 'all')
         return Promise.reject({ status: 400, msg: 'Invalid Limit' });
     if (isNaN(+p))

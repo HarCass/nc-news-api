@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const pg_format_1 = __importDefault(require("pg-format"));
 const connection_js_1 = __importDefault(require("../connection.js"));
 const utils_js_1 = require("./utils.js");
-const seed = ({ topicData, userData, articleData, commentData }) => __awaiter(void 0, void 0, void 0, function* () {
+const seed = (_a) => __awaiter(void 0, [_a], void 0, function* ({ topicData, userData, articleData, commentData }) {
     return connection_js_1.default
         .query(`DROP TABLE IF EXISTS comments;`)
         .then(() => {
