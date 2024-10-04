@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkArticleIdExists = exports.removeArticleById = exports.insertArticle = exports.checkTopicExists = exports.updateArticleById = exports.insertCommentsByArticleId = exports.selectCommentsByArticleId = exports.selectArticles = exports.selectArticleById = void 0;
-const connection_1 = __importDefault(require("../db/connection"));
+const connection_js_1 = __importDefault(require("../db/connection.js"));
 const selectArticleById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const sql = `
     SELECT articles.*, CAST(COUNT(comments) AS INT) AS comment_count
@@ -22,7 +22,7 @@ const selectArticleById = (id) => __awaiter(void 0, void 0, void 0, function* ()
     GROUP BY articles.article_id
     HAVING articles.article_id = $1
     `;
-    return connection_1.default.query(sql, [id])
+    return connection_js_1.default.query(sql, [id])
         .then(({ rows }) => {
         if (rows.length)
             return rows[0];
@@ -59,7 +59,7 @@ const selectArticles = (topic, sort = 'created_at', order = 'desc', limit = '10'
     let countSql = 'SELECT * FROM articles';
     if (topic)
         countSql += ' WHERE topic = $1';
-    return Promise.all([connection_1.default.query(articleSql, queryParams), connection_1.default.query(countSql, queryParams)])
+    return Promise.all([connection_js_1.default.query(articleSql, queryParams), connection_js_1.default.query(countSql, queryParams)])
         .then(([{ rows }, { rowCount }]) => ({ articles: rows, total_count: rowCount }));
 });
 exports.selectArticles = selectArticles;
@@ -71,7 +71,7 @@ const selectCommentsByArticleId = (id, limit = '10', p = '1') => __awaiter(void 
     let sql = `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC LIMIT ${limit}`;
     if (limit !== 'all')
         sql += ` OFFSET ${+limit * (+p - 1)}`;
-    return connection_1.default.query(sql, [id])
+    return connection_js_1.default.query(sql, [id])
         .then(({ rows }) => rows);
 });
 exports.selectCommentsByArticleId = selectCommentsByArticleId;
@@ -84,14 +84,14 @@ const insertCommentsByArticleId = (id, data) => __awaiter(void 0, void 0, void 0
     ($1, $2, $3)
     RETURNING *
     `;
-    return connection_1.default.query(sql, valuesArr)
+    return connection_js_1.default.query(sql, valuesArr)
         .then(({ rows }) => rows[0]);
 });
 exports.insertCommentsByArticleId = insertCommentsByArticleId;
 const updateArticleById = (id, inc_votes) => __awaiter(void 0, void 0, void 0, function* () {
     if (isNaN(inc_votes))
         return Promise.reject({ status: 400, msg: 'Invalid Format' });
-    return connection_1.default.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [inc_votes, id])
+    return connection_js_1.default.query('UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *', [inc_votes, id])
         .then(({ rows }) => {
         if (rows.length)
             return rows[0];
@@ -101,7 +101,7 @@ const updateArticleById = (id, inc_votes) => __awaiter(void 0, void 0, void 0, f
 });
 exports.updateArticleById = updateArticleById;
 const checkTopicExists = (topic) => __awaiter(void 0, void 0, void 0, function* () {
-    yield connection_1.default.query('SELECT * FROM topics WHERE slug = $1', [topic])
+    yield connection_js_1.default.query('SELECT * FROM topics WHERE slug = $1', [topic])
         .then(({ rows }) => {
         if (!rows.length)
             return Promise.reject({ status: 404, msg: 'Topic Not Found' });
@@ -136,16 +136,16 @@ const insertArticle = (data) => __awaiter(void 0, void 0, void 0, function* () {
     LEFT JOIN comments ON comments.article_id = new_article.article_id
     GROUP BY new_article.article_id, new_article.author, new_article.title, new_article.body, new_article.topic, new_article.article_img_url, new_article.votes, new_article.created_at
     `;
-    return connection_1.default.query(sql, valuesArr)
+    return connection_js_1.default.query(sql, valuesArr)
         .then(({ rows }) => rows[0]);
 });
 exports.insertArticle = insertArticle;
 const removeArticleById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield connection_1.default.query('DELETE FROM articles WHERE article_id = $1', [id]);
+    yield connection_js_1.default.query('DELETE FROM articles WHERE article_id = $1', [id]);
 });
 exports.removeArticleById = removeArticleById;
 const checkArticleIdExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield connection_1.default.query('SELECT * FROM articles WHERE article_id = $1', [id])
+    yield connection_js_1.default.query('SELECT * FROM articles WHERE article_id = $1', [id])
         .then(({ rows }) => {
         if (!rows.length)
             return Promise.reject({ status: 404, msg: 'ID Not Found' });

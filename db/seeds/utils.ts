@@ -1,4 +1,4 @@
-import { ArticleData, ArticleDataFormatted, CommentData, CommentDataFormatted } from "../../types";
+import { ArticleData, ArticleDataFormatted, CommentData, CommentDataFormatted } from "../../types/index.js";
 
 export function convertTimestampToDate(data: ArticleData): ArticleDataFormatted;
 export function convertTimestampToDate(data: CommentData): CommentDataFormatted;

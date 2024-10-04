@@ -1,12 +1,12 @@
-import { Router } from "express";
-import { delCommentById, patchCommentById, getCommentById } from '../controllers/comments';
+import { FastifyInstance } from 'fastify';
+import { delCommentById, patchCommentById, getCommentById } from '../controllers/comments.js';
 
-const router = Router();
+const commentsRouter = async (app: FastifyInstance) => {
+    app.delete('/:comment_id', delCommentById);
+    
+    app.patch('/:comment_id', patchCommentById);
+    
+    app.get('/:comment_id', getCommentById);
+};
 
-router.delete('/:comment_id', delCommentById);
-
-router.patch('/:comment_id', patchCommentById);
-
-router.get('/:comment_id', getCommentById);
-
-export default router;
+export default commentsRouter;

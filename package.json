@@ -10,7 +10,7 @@
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./dist/db/seeds/run-seed.js",
     "seed-prod": "NODE_ENV=production pnpm seed",
-    "seed-prod-win": "cross-env NODE_ENV=production pnpm seed",
+    "seed-prod-win": "SET NODE_ENV=production&& pnpm seed",
     "test": "vitest run",
     "prepare": "husky install"
   },
@@ -31,7 +31,6 @@
     "@types/pg": "^8.10.9",
     "@types/pg-format": "^1.0.5",
     "@types/supertest": "^6.0.2",
-    "cross-env": "^7.0.3",
     "husky": "^8.0.3",
     "pg-format": "^1.0.4",
     "supertest": "^6.3.4",
@@ -39,9 +38,9 @@
     "vitest": "^1.2.0"
   },
   "dependencies": {
-    "cors": "^2.8.5",
+    "@fastify/cors": "^10.0.1",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "fastify": "^5.0.0",
     "pg": "^8.11.3"
   }
 }

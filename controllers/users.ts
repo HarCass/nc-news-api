@@ -1,44 +1,39 @@
-import { RequestHandler } from 'express';
-import { selectUsers, selectUserById, selectCommentsByUser, checkUsernameExists, insertUser, removeUser, selectArticlesByUser } from '../models/users';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { selectUsers, selectUserById, selectCommentsByUser, checkUsernameExists, insertUser, removeUser, selectArticlesByUser } from '../models/users.js';
+import { User } from '../types/index.js';
 
-export const getUsers: RequestHandler = (_req, res, next) => {
-    return selectUsers()
-    .then(users => res.status(200).send({users}))
-    .catch(next);
+export const getUsers = async (_req: FastifyRequest, rep: FastifyReply) => {
+    const users = await selectUsers();
+    rep.send({users});
 }
 
-export const getUserById: RequestHandler = (req, res, next) => {
+export const getUserById = async (req: FastifyRequest<{Params: {username: string}}>, rep: FastifyReply) => {
     const {username} = req.params;
-    return selectUserById(username)
-    .then(user => res.status(200).send({user}))
-    .catch(next);
+    const user = await selectUserById(username);
+    rep.send({user});
 }
 
-export const getCommentsByUser: RequestHandler = (req, res, next) => {
+export const getCommentsByUser = async (req: FastifyRequest<{Params: {username: string}}>, rep: FastifyReply) => {
     const {username} = req.params;
-    return Promise.all([selectCommentsByUser(username), checkUsernameExists(username)])
-    .then(([comments]) => res.status(200).send({comments}))
-    .catch(next);
+    const [comments] = await Promise.all([selectCommentsByUser(username), checkUsernameExists(username)]);
+    rep.send({comments});
 }
 
-export const postUser: RequestHandler = (req, res, next) => {
+export const postUser = async (req: FastifyRequest<{Body: User}>, rep: FastifyReply) => {
     const data = req.body;
-    return insertUser(data)
-    .then(user => res.status(201).send({user}))
-    .catch(next);
+    const user = await insertUser(data);
+    rep.status(201).send({user});
 }
 
-export const delUser: RequestHandler = (req, res, next) => {
+export const delUser = async (req: FastifyRequest<{Params: {username: string}}>, rep: FastifyReply) => {
     const {username} = req.params;
-    return checkUsernameExists(username)
-    .then(() => removeUser(username))
-    .then(() => res.status(204).send())
-    .catch(next);
+    await checkUsernameExists(username);
+    await removeUser(username);
+    rep.status(204).send();
 }
 
-export const getArticlesByUser: RequestHandler = (req, res, next) => {
+export const getArticlesByUser = async (req: FastifyRequest<{Params: {username: string}}>, rep: FastifyReply) => {
     const {username} = req.params;
-    return Promise.all([selectArticlesByUser(username), checkUsernameExists(username)])
-    .then(([articles]) => res.status(200).send({articles}))
-    .catch(next);
+    const [articles] = await Promise.all([selectArticlesByUser(username), checkUsernameExists(username)]);
+    rep.send({articles});
 }

@@ -13,13 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.selectCommentById = exports.updateCommentById = exports.checkCommentIdExists = exports.removeCommentById = void 0;
-const connection_1 = __importDefault(require("../db/connection"));
+const connection_js_1 = __importDefault(require("../db/connection.js"));
 const removeCommentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield connection_1.default.query('DELETE FROM comments WHERE comment_id = $1', [id]);
+    yield connection_js_1.default.query('DELETE FROM comments WHERE comment_id = $1', [id]);
 });
 exports.removeCommentById = removeCommentById;
 const checkCommentIdExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    yield connection_1.default.query('SELECT * FROM comments WHERE comment_id = $1', [id])
+    yield connection_js_1.default.query('SELECT * FROM comments WHERE comment_id = $1', [id])
         .then(({ rows }) => {
         if (!rows.length)
             return Promise.reject({ status: 404, msg: 'ID Not Found' });
@@ -29,7 +29,7 @@ exports.checkCommentIdExists = checkCommentIdExists;
 const updateCommentById = (inc_votes, id) => __awaiter(void 0, void 0, void 0, function* () {
     if (isNaN(+inc_votes))
         return Promise.reject({ status: 400, msg: 'Invalid Format' });
-    return connection_1.default.query('UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *', [inc_votes, id])
+    return connection_js_1.default.query('UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *', [inc_votes, id])
         .then(({ rows }) => {
         if (rows.length)
             return rows[0];
@@ -38,7 +38,7 @@ const updateCommentById = (inc_votes, id) => __awaiter(void 0, void 0, void 0, f
 });
 exports.updateCommentById = updateCommentById;
 const selectCommentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    return connection_1.default.query('SELECT * FROM comments WHERE comment_id = $1', [id])
+    return connection_js_1.default.query('SELECT * FROM comments WHERE comment_id = $1', [id])
         .then(({ rows }) => {
         if (rows.length)
             return rows[0];

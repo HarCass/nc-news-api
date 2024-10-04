@@ -1,22 +1,22 @@
-import db from '../db/connection';
-import { Article, Comment, DbRows, User } from '../types';
+import db from '../db/connection.js';
+import { Article, Comment, User } from '../types/index.js';
 
 export const selectUsers = async () => {
-    return db.query('SELECT * FROM users')
-    .then(({rows}: DbRows<User>) => rows);
+    return db.query<User>('SELECT * FROM users')
+    .then(({rows}) => rows);
 }
 
 export const selectUserById = async (username: string) => {
-    return db.query('SELECT * FROM users WHERE username = $1', [username])
-    .then(({rows}: DbRows<User>) =>  {
+    return db.query<User>('SELECT * FROM users WHERE username = $1', [username])
+    .then(({rows}) =>  {
         if (!rows.length) return Promise.reject({status: 404, msg: 'User Not Found'});
         return rows[0];
     });
 }
 
 export const selectCommentsByUser = async (username: string) => {
-    return db.query('SELECT * FROM comments WHERE author = $1', [username])
-    .then(({rows}: DbRows<Comment>) => rows);
+    return db.query<Comment>('SELECT * FROM comments WHERE author = $1', [username])
+    .then(({rows}) => rows);
 }
 
 export const checkUsernameExists = async (username: string) => {
@@ -34,8 +34,8 @@ export const insertUser = async (data: User) => {
     ($1, $2, $3)
     RETURNING *
     `;
-    return db.query(sql, [data.username, data.name, data.avatar_url])
-    .then(({rows}: DbRows<User>) => rows[0]);
+    return db.query<User>(sql, [data.username, data.name, data.avatar_url])
+    .then(({rows}) => rows[0]);
 }
 
 export const removeUser = async (username: string) => {
@@ -50,6 +50,6 @@ export const selectArticlesByUser = async (username: string) => {
     GROUP BY articles.article_id
     HAVING articles.author = $1
     `
-    return db.query(sql, [username])
-    .then(({rows}: DbRows<Article>) => rows);
+    return db.query<Article>(sql, [username])
+    .then(({rows}) => rows);
 }

@@ -1,10 +1,11 @@
-import { Router } from 'express';
-import { getTopics, postTopic } from '../controllers/topics';
+import { FastifyInstance } from 'fastify';
+import { getTopics, postTopic } from '../controllers/topics.js';
 
-const router = Router();
+const topicsRouter = async (app: FastifyInstance) => {
+    app.get('/', getTopics);
+    
+    app.post('/', postTopic);
+};
 
-router.get('/', getTopics);
 
-router.post('/', postTopic);
-
-export default router;
+export default topicsRouter;

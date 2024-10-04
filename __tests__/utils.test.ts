@@ -1,6 +1,6 @@
-import { convertTimestampToDate } from "../db/seeds/utils";
+import { convertTimestampToDate } from "../db/seeds/utils.js";
 import {describe, test, expect, expectTypeOf} from "vitest";
-import { ArticleData, CommentData } from "../types";
+import { ArticleData, CommentData } from "../types/index.js";
   
   describe("convertTimestampToDate", () => {
     test("returns a new object", () => {

@@ -13,9 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.insertTopic = exports.selectTopics = void 0;
-const connection_1 = __importDefault(require("../db/connection"));
+const connection_js_1 = __importDefault(require("../db/connection.js"));
 const selectTopics = () => __awaiter(void 0, void 0, void 0, function* () {
-    return connection_1.default.query('SELECT * FROM topics')
+    return connection_js_1.default.query('SELECT * FROM topics')
         .then(({ rows }) => rows);
 });
 exports.selectTopics = selectTopics;
@@ -27,7 +27,7 @@ const insertTopic = (slug, description) => __awaiter(void 0, void 0, void 0, fun
     ($1, $2)
     RETURNING *
     `;
-    return connection_1.default.query(sql, [slug, description])
+    return connection_js_1.default.query(sql, [slug, description])
         .then(({ rows }) => rows[0]);
 });
 exports.insertTopic = insertTopic;

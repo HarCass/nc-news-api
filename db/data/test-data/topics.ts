@@ -1,4 +1,4 @@
-import { Topic } from "../../../types";
+import { Topic } from "../../../types/index.js";
 
 const topicData: Topic[] = [
   {

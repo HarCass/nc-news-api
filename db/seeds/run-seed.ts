@@ -1,6 +1,6 @@
-import devData from '../data/development-data/index';
+import devData from '../data/development-data/index.js';
 import seed from './seed.js';
-import db from '../connection';
+import db from '../connection.js';
 
 const runSeed = async () => {
   return seed(devData).then(() => db.end());
