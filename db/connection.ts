@@ -16,8 +16,7 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 const dbConfig: PoolConfig = ENV === 'production' ? {
   connectionString: process.env.DATABASE_URL,
   max: 3,
-  ssl: {rejectUnauthorized: false},
-  idleTimeoutMillis: 7200
+  ssl: {rejectUnauthorized: false}
 } : {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
