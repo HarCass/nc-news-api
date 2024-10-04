@@ -12,8 +12,7 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 }
 const dbConfig = ENV === 'production' ? {
     connectionString: process.env.DATABASE_URL,
-    max: 3,
-    ssl: { rejectUnauthorized: false }
+    max: 3
 } : {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
